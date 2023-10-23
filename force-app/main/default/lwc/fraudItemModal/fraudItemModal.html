@@ -1,0 +1,18 @@
+<template>
+    <lightning-modal-header label={fraudItemTitle}></lightning-modal-header>
+    <lightning-modal-body>
+        <lightning-input required onchange={handleInputChange} type="datetime" name="txDate" label="Transaction Date Time" value={txDate}></lightning-input>
+        <lightning-input required onchange={handleInputChange} type="text" name="merchant" label="Merchant" value={merchant}></lightning-input>
+        <lightning-input required onchange={handleInputChange} type="text" name="cardNumber" label="Card Number" value={cardNumber}></lightning-input>
+        <lightning-input required onchange={handleInputChange} type="number" formatter="currency" step="0.01" name="amount" label="Amount" value={amount}></lightning-input>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <template if:true={isNewFraudItem}>
+            <lightning-button label="Create" icon-name="action:new" onclick={tryToSave}></lightning-button>
+        </template>
+        <template if:false={isNewFraudItem}>
+            <lightning-button label="Update" icon-name="action:edit" onclick={tryToSave} class="slds-var-m-right_small"></lightning-button>
+            <lightning-button label="Delete" icon-name="action:delete" onclick={tryToDelete} class="slds-var-m-left_small"></lightning-button>
+        </template>
+    </lightning-modal-footer>
+</template>

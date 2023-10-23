@@ -1,0 +1,14 @@
+{
+    "Username": "qa01@poc.fraud.com",
+    "LastName": "qa01",
+    "FirstName": "Zhou",
+    "Email": "PengCheng.Zhou@gmail.com",
+    "Alias": "qa01",
+    "TimeZoneSidKey": "America/Toronto",
+    "LocaleSidKey": "en_US",
+    "EmailEncodingKey": "UTF-8",
+    "LanguageLocaleKey": "en_US",
+    "profileName": "Profile Frontline",
+    "permsets": ["Fraud_Handling"],
+    "generatePassword": true
+}

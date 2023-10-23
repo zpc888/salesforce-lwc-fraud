@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Fraud_Reason__c</fullName>
+    <externalId>false</externalId>
+    <label>Fraud Reason</label>
+    <required>true</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Fraud Reason 01</fullName>
+                <default>false</default>
+                <label>Fraud Reason 01</label>
+            </value>
+            <value>
+                <fullName>Fraud Reason 02</fullName>
+                <default>false</default>
+                <label>Fraud Reason 02</label>
+            </value>
+            <value>
+                <fullName>Fraud Reason 03</fullName>
+                <default>false</default>
+                <label>Fraud Reason 03</label>
+            </value>
+            <value>
+                <fullName>Fraud Reason 04</fullName>
+                <default>false</default>
+                <label>Fraud Reason 04</label>
+            </value>
+            <value>
+                <fullName>Fraud Reason 05</fullName>
+                <default>false</default>
+                <label>Fraud Reason 05</label>
+            </value>
+            <value>
+                <fullName>Fraud Reason 06</fullName>
+                <default>false</default>
+                <label>Fraud Reason 06</label>
+            </value>
+            <value>
+                <fullName>Fraud Reason 07</fullName>
+                <default>false</default>
+                <label>Fraud Reason 07</label>
+            </value>
+            <value>
+                <fullName>Fraud Reason 08</fullName>
+                <default>false</default>
+                <label>Fraud Reason 08</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

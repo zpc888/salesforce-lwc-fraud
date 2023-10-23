@@ -1,0 +1,61 @@
+<template>
+    <lightning-card>
+        <div slot="title">
+            <lightning-icon icon-name="standard:record_create"></lightning-icon>
+            <span class="slds-var-m-left_small">New Fraud</span>
+        </div>
+        <lightning-button label="Close" icon-name="action:close" 
+                onclick={handleHideFraudDetail} 
+                slot="actions"></lightning-button>
+        <div>
+            <lightning-record-edit-form
+                onsuccess={handleSuccess}
+                onsubmit={handleSubmit}
+                object-api-name={fraudObjectApi}>
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input-field field-name={fraudClientField}></lightning-input-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input type="number"  label="Total Amount" value={fraudTotalAmount} 
+                                formatter="currency" step="0.01"
+                                disabled="disabled" read-only="true"></lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input-field field-name={fraudReasonField} onchange={handleDetailFraudReasonChanged}></lightning-input-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <template if:true={showDetailFraudReasonOther}>
+                            <lightning-input-field field-name={fraudOtherReasonField} required></lightning-input-field>
+                        </template>
+                    </div>
+                    <div class="slds-col slds-size_2-of-2 slds-var-p-around_medium">
+                         <lightning-card>
+                            <div slot="title">
+                                <span class="slds-var-m-left_small">Transaction Items</span>
+                            </div>
+                            <lightning-button label="New Item" icon-name="action:new_note" 
+                                    onclick={handleNewItem} 
+                                    slot="actions"></lightning-button>
+                            <div>
+                                <lightning-datatable hide-checkbox-column="true"
+                                    key-field="kid"
+                                    data={itemData}
+                                    columns={itemCols}
+                                    onrowaction={handleItemRowAction}
+                                ></lightning-datatable>
+                            </div>
+                        </lightning-card>
+                    </div>
+                    <div class="slds-col slds-size_2-of-2 slds-var-p-top_medium">
+                        <div class="slds-align_absolute-center">
+                            <lightning-button class="slds-var-m-right_small" label="Cancel" onclick={handleHideFraudDetail}></lightning-button>
+                            <lightning-button class="slds-var-m-left_small slds-var-m-right_small" label="Reset" onclick={handleReset}></lightning-button>
+                            <lightning-button class="slds-var-m-left_small slds-var-m-right_small" name="createNewFraud" type="submit" label="Create New Fraud"></lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </lightning-record-edit-form>
+        </div>
+    </lightning-card>
+</template>

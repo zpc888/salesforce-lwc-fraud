@@ -1,0 +1,39 @@
+<template>
+    <lightning-card title="Frontline Team">
+        <lightning-button label="New" icon-name="action:new" onclick={handleNewFraud} slot="actions"></lightning-button>
+        <!-- <lightning-input name="filter" label="Filter" type="search"></lightning-input> -->
+        <lightning-button label="Filter" icon-name="action:filter" slot="actions"></lightning-button>
+        <div>
+            <div class="fraud-list">
+                <lightning-datatable hide-checkbox-column="true"
+                        onrowaction={handleRowAction}
+                        key-field="id" data={data} 
+                        columns={columns}>
+                </lightning-datatable>
+            </div>
+            <template if:true={showDetail}>
+                <div class="fraud-detail slds-box slds-border_right slds-var-p-around_small slds-var-m-around_xx-large">
+                    <template if:true={isNewFraud}>
+                        <c-team-frontline-new 
+                                oninsertnewfraudok={handleNewFraudInserted} 
+                                onhidefrauddetailclick={handleHideFraudDetail}></c-team-frontline-new>
+                    </template>
+                    <template if:false={isNewFraud}>
+                        <template if:true={wipFraud}>
+                            <c-team-frontline-wip-view
+                                    show-fraud-reason-other={showDetailFraudReasonOther}
+                                    onhidefrauddetailclick={handleHideFraudDetail}
+                                    fraud-id={detailFraudId} fraud-number={detailFraud.Name}></c-team-frontline-wip-view>
+                        </template>
+                        <template if:false={wipFraud}>
+                            <c-team-frontline-readonly 
+                                    show-fraud-reason-other={showDetailFraudReasonOther}
+                                    onhidefrauddetailclick={handleHideFraudDetail}
+                                    fraud-id={detailFraudId} fraud-number={detailFraud.Name}></c-team-frontline-readonly>
+                        </template>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Fraud__c</fullName>
+    <externalId>false</externalId>
+    <label>Fraud</label>
+    <referenceTo>Fraud__c</referenceTo>
+    <relationshipLabel>Fraud Items</relationshipLabel>
+    <relationshipName>Fraud_Items</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

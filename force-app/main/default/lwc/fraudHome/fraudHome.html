@@ -1,0 +1,23 @@
+<template>
+    <template if:true={isTeamFrontlineProfile}>
+        <c-team-frontline-home></c-team-frontline-home>
+    </template>
+    <template if:true={isTeamFraudProfile}>
+        <c-team-fraud-home></c-team-fraud-home>
+    </template>
+    <template if:true={isTeamSecurityProfile}>
+        <c-team-security-home></c-team-security-home>
+    </template>
+    <template if:true={isUnknownProfile}>
+        <lightning-card title="Unsupported Profile">
+            <div>
+                Sorry, {userId} - {userName} since your profile is {profileName}
+                , which is not in 
+                <lightning-badge label={frontlineTeamProfileName}></lightning-badge>
+                <lightning-badge label={fraudTeamProfileName}></lightning-badge>
+                <lightning-badge label={securityTeamProfileName}></lightning-badge>
+                . You are not allowed to access Fraud Application.
+            </div>
+        </lightning-card>
+    </template>
+</template>
