@@ -14,38 +14,7 @@ import MERCHANT     from '@salesforce/schema/Fraud_Item__c.Merchant__c';
 import CARD_NUMBER  from '@salesforce/schema/Fraud_Item__c.Card_Number__c';
 import ITEM_AMOUNT  from '@salesforce/schema/Fraud_Item__c.Amount__c';
 
-const FRAUD_ITEM_RO_COLS = [
-    {
-        label: 'Transaction Date',
-        iconName: 'standard:today',
-        fieldName: TX_DATE.fieldApiName,
-        type: 'date', 
-        typeAttributes: {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true,
-        },
-    },
-    {
-        label: 'Merchant',
-        iconName: 'standard:store_group',
-        fieldName: MERCHANT.fieldApiName,
-    },
-    {
-        label: 'Card Number',
-        iconName: 'custom:custom40',
-        fieldName: CARD_NUMBER.fieldApiName,
-    },
-    {
-        label: 'Amount',
-        iconName: 'custom:custom17',
-        fieldName: ITEM_AMOUNT.fieldApiName,
-        type: 'currency',
-    },
-];
+import { fraud_item_base_columns } from 'c/fraudCommon'
 
 export default class TeamFrontlineReadonly extends LightningElement {
     fraudObjectApi = FRAUD_OBJECT;
@@ -55,11 +24,11 @@ export default class TeamFrontlineReadonly extends LightningElement {
     fraudStatusField = FRAUD_STATUS_FIELD;
     fraudApprovalStatusField = FRAUD_APPROVAL_STATUS_FIELD;
 
-    @api fraudId;
+    _fraudId;
     @api fraudNumber;
     @api showFraudReasonOther;
 
-    itemCols = FRAUD_ITEM_RO_COLS;
+    itemCols = [...fraud_item_base_columns];
     itemData;
 
     get fraudTotalAmount() {
@@ -69,8 +38,12 @@ export default class TeamFrontlineReadonly extends LightningElement {
                 .reduce((a, b) => a + b, 0);
     }
 
-    connectedCallback() {
-        getFraudItemsByFraudId({fraudId: this.fraudId}).then(r => {
+    @api get fraudId() {
+        return this._fraudId;
+    }
+
+    set fraudId(fid) {
+        getFraudItemsByFraudId({fraudId: fid}).then(r => {
             this.itemData = r.map(i => {
                 return {
                     ...i,

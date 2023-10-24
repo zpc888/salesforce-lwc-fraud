@@ -20,10 +20,22 @@
                     </template>
                     <template if:false={isNewFraud}>
                         <template if:true={wipFraud}>
-                            <c-team-frontline-wip-view
+                            <template if:true={isDetailFraudInEditMode}>
+                                <c-team-frontline-wip-edit
                                     show-fraud-reason-other={showDetailFraudReasonOther}
                                     onhidefrauddetailclick={handleHideFraudDetail}
+                                    ondeletefraudclick={handleFraudDeletion}
+                                    onupdatefraudsaved={handleFraudUpdatedOk}
+                                    fraud-id={detailFraudId} fraud-number={detailFraud.Name}></c-team-frontline-wip-edit>
+                            </template>
+                            <template if:false={isDetailFraudInEditMode}>
+                                <c-team-frontline-wip-view
+                                    show-fraud-reason-other={showDetailFraudReasonOther}
+                                    onhidefrauddetailclick={handleHideFraudDetail}
+                                    ondeletefraudclick={handleFraudDeletion}
+                                    onupdatefraudclick={handleEnterFraudUpdateMode}
                                     fraud-id={detailFraudId} fraud-number={detailFraud.Name}></c-team-frontline-wip-view>
+                            </template>
                         </template>
                         <template if:false={wipFraud}>
                             <c-team-frontline-readonly 

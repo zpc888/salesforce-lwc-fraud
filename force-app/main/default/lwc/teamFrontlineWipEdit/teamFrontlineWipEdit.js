@@ -1,74 +1,98 @@
-import { LightningElement } from 'lwc';
-import FraudItemModal from 'c/fraudItemModal';
+import { LightningElement, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import LightningConfirm from 'lightning/confirm';
+import getFraudItemsByFraudId from '@salesforce/apex/FraudController.getFraudItemsByFraudId';
+import syncFraudItems from '@salesforce/apex/FraudController.syncFraudItems';
+
 import FRAUD_OBJECT from '@salesforce/schema/Fraud__c';
 import FRAUD_CLIENT_FIELD from '@salesforce/schema/Fraud__c.Account__c';
 import FRAUD_REASON_FIELD from '@salesforce/schema/Fraud__c.Fraud_Reason__c';
 import FRAUD_OTHER_REASON_FIELD from '@salesforce/schema/Fraud__c.Other_Reason_Detail__c';
 
-// import ITEM_ID from '@salesforce/schema/Fraud_Item__c.Id';
-// import FRAUD_MASTER from '@salesforce/schema/Fraud_Item__c.Fraud__c';
-// import ITEM_ORDER   from '@salesforce/schema/Fraud_Item__c.Item_Order__c';
-
-import syncFraudItems from '@salesforce/apex/FraudController.syncFraudItems';
-
 import { fraud_item_base_columns, fraud_item_actions } from 'c/fraudCommon'
 
-export default class TeamFrontlineNew extends LightningElement {
+import FraudItemModal from 'c/fraudItemModal';
+
+export default class TeamFrontlineWipEdit extends LightningElement {
     fraudObjectApi = FRAUD_OBJECT;
     fraudClientField = FRAUD_CLIENT_FIELD;
     fraudReasonField = FRAUD_REASON_FIELD;
     fraudOtherReasonField = FRAUD_OTHER_REASON_FIELD;
 
-    detailFraudId;
-    showDetailFraudReasonOther = false;
+    _fraudId;
+    @api fraudNumber;
+    @api showFraudReasonOther;
 
     itemCols = [...fraud_item_base_columns, {
         type: 'action', typeAttributes: { rowActions: fraud_item_actions, }, 
     }];
+    itemData;
+
     kidCounter = 0;
-    itemData = [];
     deletedItemIds = [];
 
     handleDetailFraudReasonChanged(evt) {
-        this.showDetailFraudReasonOther = evt.detail?.value === 'Other';
+        this.showFraudReasonOther = evt.detail?.value === 'Other';
+    }    
+
+    get fraudTotalAmount() {
+        return (this.itemData || [])
+                .map(i => Number(i.Amount__c))
+                .filter(a => !isNaN(a))
+                .reduce((a, b) => a + b, 0);
+    }
+
+    @api get fraudId() {
+        return this._fraudId;
+    }
+
+    set fraudId(fid) {
+        this._fraudId = fid;
+        // TODO: ideally it should check status again to avoid stale status, if in stale, it should dispatch a refresh-event
+        // to be bulletproof, we should add trigger check at sobject for updation and deletion by frontline users
+        getFraudItemsByFraudId({fraudId: fid}).then(r => {
+            this.itemData = r.map(i => {
+                return {
+                    ...i,
+                    kid: i.Id,
+                };
+            });
+        }).catch(err => {
+            const errEvent = new ShowToastEvent({
+                title: 'Transaction Items Retrieve Error',
+                message: 'Fail to Fetch Fraud Items: ' + err.body?.message,
+                variant: 'error',
+                mode: 'dismissable',
+            });
+            this.dispatchEvent(errEvent);
+        });
     }
 
     handleHideFraudDetail(evt) {
         const event = new CustomEvent('hidefrauddetailclick', { 
             detail: {
-                sourceComponent: 'NewFraudComponent'
+                sourceComponent: 'WipFraudEdit'
             }
         });
         this.dispatchEvent(event);
     }
 
-    handleSuccess(event) {
-        this.detailFraudId = event.detail.id;
-        const itemVOs = this.itemData.map((item, index) => {
-            item.Item_Order__c = index + 1;
-            item.Fraud__c = this.detailFraudId;
-            return item;
+    async handleDeleteFraudDetail(evt) {
+       const confirmed = await LightningConfirm.open({ 
+            message: 'Are you sure to delete this Fraud No. ' + this.fraudNumber + "?",
+            variant: 'headerless',
+            label: 'Confirmation',
+            theme: 'warning',
+       });
+       if (confirmed) {
+        const event = new CustomEvent('deletefraudclick', { 
+            detail: {
+                sourceComponent: 'WipFraudEdit',
+                fraudId: this.fraudId,
+            }
         });
-        syncFraudItems({
-            fraudId: this.detailFraudId,
-            newOrUpdated: itemVOs,
-            deletedItemIds: this.deletedItemIds,
-        }).then(r => {
-            const okEvent = new CustomEvent('insertnewfraudok', {
-                detail: {
-                    fraudId: this.detailFraudId,
-                },
-            });
-            this.dispatchEvent(okEvent);
-        }).catch(err => {
-            const errEvent = new ShowToastEvent({
-                title: 'Transaction Items Sync Error',
-                message: 'Fail to add/update/delete Transaction Items: ' + err.body?.message,
-                variant: 'error',
-            });
-            this.dispatchEvent(errEvent);
-        });
+        this.dispatchEvent(event);        
+       }
     }
 
     handleSubmit(event) {
@@ -86,6 +110,33 @@ export default class TeamFrontlineNew extends LightningElement {
         const fields = event.detail.fields;
         fields.Status__c = 'Pending';
         this.template.querySelector('lightning-record-edit-form').submit(fields);
+    }
+    
+    handleSuccess(event) {
+        // this.fraudId = event.detail.id;
+        const itemVOs = this.itemData.map((item, index) => {
+            item.Item_Order__c = index + 1;
+            return item;
+        });
+        syncFraudItems({
+            fraudId: this.fraudId,
+            newOrUpdated: itemVOs,
+            deletedItemIds: this.deletedItemIds,
+        }).then(r => {
+            const okEvent = new CustomEvent('updatefraudsaved', {
+                detail: {
+                    fraudId: this.fraudId,
+                },
+            });
+            this.dispatchEvent(okEvent);
+        }).catch(err => {
+            const errEvent = new ShowToastEvent({
+                title: 'Transaction Items Sync Error',
+                message: 'Fail to add/update/delete Transaction Items: ' + err.body?.message,
+                variant: 'error',
+            });
+            this.dispatchEvent(errEvent);
+        });
     }
 
     handleReset(event) {
@@ -139,12 +190,8 @@ export default class TeamFrontlineNew extends LightningElement {
         this.itemData = newData;
     }
 
-    get fraudTotalAmount() {
-        return this.itemData.map(i => Number(i.Amount__c)).filter(a => !isNaN(a)).reduce((a, b) => a + b, 0);
-    }
-
     async handleNewItem(event) {
-        const newItem = { kid: --this.kidCounter, isNewItem: true, };
+        const newItem = { kid: --this.kidCounter, isNewItem: true, Fraud__c: this.fraudId, };
         this.launchItemModalForCUD(newItem);
     }
 

@@ -1,4 +1,5 @@
 import { LightningElement } from 'lwc';
+import { deleteRecord } from "lightning/uiRecordApi";
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getFraudsForFrontlineTeam from '@salesforce/apex/FraudController.getFraudsForFrontlineTeam';
 import getFraudById from '@salesforce/apex/FraudController.getFraudById';
@@ -19,6 +20,7 @@ export default class TeamFrontlineHome extends LightningElement {
     isNewFraud = false;
     detailFraudId;
     detailFraud;
+    isDetailFraudInEditMode = false;
 
     fraudClientField = FRAUD_CLIENT_FIELD;
     fraudReasonField = FRAUD_REASON_FIELD;
@@ -30,6 +32,8 @@ export default class TeamFrontlineHome extends LightningElement {
 
     highlightSelectedFraud() {
         if (!this.data || !this.detailFraudId) {
+            // this will keep the previous selection, highlight the selected row
+            // if we want to discard the previous selection, re-calc cellClass is needed
             return;
         }
         const newData = this.data.map(f => {
@@ -93,10 +97,12 @@ export default class TeamFrontlineHome extends LightningElement {
         if (result) {
             this.detailFraud = result;
             this.isNewFraud = false;
+            this.isDetailFraudInEditMode = false;
             return true;
         } else {
             this.isNewFraud = true;
             this.detailFraud = null;
+            this.isDetailFraudInEditMode = false;
             return false;
         }
         // return getFraudById({fraudId: this.detailFraudId}).then(r => {
@@ -111,14 +117,44 @@ export default class TeamFrontlineHome extends LightningElement {
     handleHideFraudDetail(evt) {
         this.showDetail = false;
         this.isNewFraud = false;
+        this.isDetailFraudInEditMode = false;
         this.detailFraudId = null;
         this.detailFraud = null;
         this.highlightSelectedFraud();
     }
 
+    handleFraudDeletion(evt) {
+        const deletedFraudId = evt.detail.fraudId;
+        deleteRecord(deletedFraudId).then(() => {
+            this.showDetail = false;
+            this.isNewFraud = false;
+            this.isDetailFraudInEditMode = false;
+            this.detailFraudId = null;
+            this.detailFraud = null;
+            const newData = this.data.filter(f => f.Id != deletedFraudId);
+            this.data = [...newData];
+        }).catch(err => {
+            this.toastErrorEvent(err);
+        });
+    }
+
+    handleEnterFraudUpdateMode(evt) {
+        // const toBeEditFraudId = evt.detail.fraudId;
+        this.isDetailFraudInEditMode = true;
+    }
+
+    async handleFraudUpdatedOk(evt) {
+        this.isDetailFraudInEditMode = false;
+        // this.detailFraudId = evt.detail.fraudId;
+        await this.refreshFraudList();
+        this.highlightSelectedFraud();
+        this.tryToShowDetail();
+    }
+
     handleNewFraud(evt) {
         this.showDetail = true;
         this.isNewFraud = true;
+        this.isDetailFraudInEditMode = false;
         this.detailFraudId = null;
         this.detailFraud = null;
         this.highlightSelectedFraud();
@@ -128,7 +164,7 @@ export default class TeamFrontlineHome extends LightningElement {
     toastErrorEvent(e) {
         const errEvent = new ShowToastEvent({
             title: 'Fraud List Error',
-            message: 'Fail to get Fraud list, error detail : ' + e.data.message,
+            message: 'Fail to get Fraud list, error detail : ' + e.body?.message,
             variant: 'error',
             mode: 'dismissable' 
         });

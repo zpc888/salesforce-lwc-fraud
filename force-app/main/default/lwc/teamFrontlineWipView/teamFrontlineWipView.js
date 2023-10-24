@@ -1,5 +1,6 @@
 import { LightningElement, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import LightningConfirm from 'lightning/confirm';
 import getFraudItemsByFraudId from '@salesforce/apex/FraudController.getFraudItemsByFraudId';
 
 import FRAUD_OBJECT from '@salesforce/schema/Fraud__c';
@@ -12,38 +13,7 @@ import MERCHANT     from '@salesforce/schema/Fraud_Item__c.Merchant__c';
 import CARD_NUMBER  from '@salesforce/schema/Fraud_Item__c.Card_Number__c';
 import ITEM_AMOUNT  from '@salesforce/schema/Fraud_Item__c.Amount__c';
 
-const FRAUD_ITEM_VIEW_COLS = [
-    {
-        label: 'Transaction Date',
-        iconName: 'standard:today',
-        fieldName: TX_DATE.fieldApiName,
-        type: 'date', 
-        typeAttributes: {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true,
-        },
-    },
-    {
-        label: 'Merchant',
-        iconName: 'standard:store_group',
-        fieldName: MERCHANT.fieldApiName,
-    },
-    {
-        label: 'Card Number',
-        iconName: 'custom:custom40',
-        fieldName: CARD_NUMBER.fieldApiName,
-    },
-    {
-        label: 'Amount',
-        iconName: 'custom:custom17',
-        fieldName: ITEM_AMOUNT.fieldApiName,
-        type: 'currency',
-    },
-];
+import { fraud_item_base_columns } from 'c/fraudCommon'
 
 export default class TeamFrontlineWipView extends LightningElement {
     fraudObjectApi = FRAUD_OBJECT;
@@ -51,11 +21,11 @@ export default class TeamFrontlineWipView extends LightningElement {
     fraudReasonField = FRAUD_REASON_FIELD;
     fraudOtherReasonField = FRAUD_OTHER_REASON_FIELD;
 
-    @api fraudId;
+    _fraudId;
     @api fraudNumber;
     @api showFraudReasonOther;
 
-    itemCols = FRAUD_ITEM_VIEW_COLS;
+    itemCols = [...fraud_item_base_columns];
     itemData;
 
     get fraudTotalAmount() {
@@ -65,8 +35,15 @@ export default class TeamFrontlineWipView extends LightningElement {
                 .reduce((a, b) => a + b, 0);
     }
 
-    connectedCallback() {
-        getFraudItemsByFraudId({fraudId: this.fraudId}).then(r => {
+    @api get fraudId() {
+        return this._fraudId;
+    }
+
+    set fraudId(fid) {
+        this._fraudId = fid;
+        // TODO: ideally it should check status again to avoid stale status, if in stale, it should dispatch a refresh-event
+        // to be bulletproof, we should add trigger check at sobject for updation and deletion by frontline users
+        getFraudItemsByFraudId({fraudId: fid}).then(r => {
             this.itemData = r.map(i => {
                 return {
                     ...i,
@@ -87,17 +64,37 @@ export default class TeamFrontlineWipView extends LightningElement {
     handleHideFraudDetail(evt) {
         const event = new CustomEvent('hidefrauddetailclick', { 
             detail: {
-                sourceComponent: 'WipFraudComponent'
+                sourceComponent: 'WipFraudView'
             }
         });
         this.dispatchEvent(event);
     }
 
     handleUpdateFraudDetail(evt) {
-        console.log('update....');
+        const event = new CustomEvent('updatefraudclick', { 
+            detail: {
+                sourceComponent: 'WipFraudView',
+                fraudId: this.fraudId,
+            }
+        });
+        this.dispatchEvent(event);        
     }
 
-    handleDeleteFraudDetail(evt) {
-        console.log('delete....');
+    async handleDeleteFraudDetail(evt) {
+       const confirmed = await LightningConfirm.open({ 
+            message: 'Are you sure to delete this Fraud No. ' + this.fraudNumber + "?",
+            variant: 'headerless',
+            label: 'Confirmation',
+            theme: 'warning',
+       });
+       if (confirmed) {
+        const event = new CustomEvent('deletefraudclick', { 
+            detail: {
+                sourceComponent: 'WipFraudView',
+                fraudId: this.fraudId,
+            }
+        });
+        this.dispatchEvent(event);        
+       }
     }
 }
