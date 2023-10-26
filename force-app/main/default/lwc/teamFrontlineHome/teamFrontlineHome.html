@@ -1,8 +1,28 @@
 <template>
     <lightning-card title="Frontline Team">
-        <lightning-button label="New" icon-name="action:new" onclick={handleNewFraud} slot="actions"></lightning-button>
-        <!-- <lightning-input name="filter" label="Filter" type="search"></lightning-input> -->
-        <lightning-button label="Filter" icon-name="action:filter" slot="actions"></lightning-button>
+        <div slot="actions" class="slds-var-p-right_small">
+            <lightning-button label="New" icon-name="action:new" onclick={handleNewFraud}></lightning-button>
+            <lightning-button-group>
+                <lightning-button-stateful 
+                    label-when-off="Select Pending Only"
+                    label-when-on="Pending Only Selected"
+                    icon-name-when-on="action:filter"
+                    selected={isSelectedPendingOnly} onclick={handleSelectPendingOnly}>
+                </lightning-button-stateful>
+                <lightning-button-stateful 
+                    label-when-off="Select All"
+                    label-when-on="All Selected"
+                    icon-name-when-on="action:filter"
+                    selected={isSelectedAll} onclick={handleSelectAll}>
+                </lightning-button-stateful>
+                <lightning-button-stateful 
+                    label-when-off="Select Submitted Only"
+                    label-when-on="Submitted Only Selected"
+                    icon-name-when-on="action:filter"
+                    selected={isSelectedSubmittedOnly} onclick={handleSelectSubmittedOnly}>
+                </lightning-button-stateful>
+            </lightning-button-group>
+        </div>
         <div>
             <div class="fraud-list">
                 <lightning-datatable hide-checkbox-column="true"

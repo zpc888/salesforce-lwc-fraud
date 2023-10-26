@@ -11,6 +11,9 @@ import { frontline_team_fraud_list_columns } from 'c/fraudCommon'
 
 
 export default class TeamFrontlineHome extends LightningElement {
+    isSelectedPendingOnly = true;
+    isSelectedAll = false;
+    isSelectedSubmittedOnly = false;
     columns = frontline_team_fraud_list_columns;
     data;
 
@@ -25,6 +28,22 @@ export default class TeamFrontlineHome extends LightningElement {
     fraudClientField = FRAUD_CLIENT_FIELD;
     fraudReasonField = FRAUD_REASON_FIELD;
     fraudOtherReasonField = FRAUD_OTHER_REASON_FIELD;
+
+    handleSelectAll(evt) {
+        this.filterFraudList(1);
+    }
+    handleSelectPendingOnly(evt) {
+        this.filterFraudList(2);
+    }
+    handleSelectSubmittedOnly(evt) {
+        this.filterFraudList(3);
+    }
+    filterFraudList(choice) {
+        this.isSelectedAll = choice === 1;
+        this.isSelectedPendingOnly = choice === 2;
+        this.isSelectedSubmittedOnly = choice === 3;
+        this.refreshFraudList();
+    }
 
     connectedCallback() {
         this.refreshFraudList();
@@ -54,8 +73,16 @@ export default class TeamFrontlineHome extends LightningElement {
 
     refreshFraudList() {
         const baseOrgUrl = 'https://' + location.host + '/';
-        return getFraudsForFrontlineTeam().then(r => {
-            this.data = r.map(r => { 
+        return getFraudsForFrontlineTeam().then(result => {
+            this.data = result.filter(r => {
+                if (this.isSelectedAll) { 
+                    return true;
+                } else if (this.isSelectedPendingOnly) {
+                    return r.Status__c === 'Pending';
+                } else {
+                    return r.Status__c !== 'Pending';
+                }
+            }).map(r => { 
                 return {
                     ...r,
                     accountUrl: baseOrgUrl + r.Account__r.Id,
