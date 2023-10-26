@@ -9,6 +9,8 @@ export default class FraudHome extends LightningElement {
     @api fraudTeamProfileName = 'Profile Fraud';
     @api securityTeamProfileName = 'Profile Security';
 
+    superProfileName = 'System Administrator';
+
     userId = strUserId;
     userName;
     profileName;
@@ -21,6 +23,10 @@ export default class FraudHome extends LightningElement {
         } else {
             this.profileName = null;
         }
+    }
+
+    get isSuperProfile() {
+        return this.profileName === this.superProfileName;
     }
 
     get isTeamFraudProfile() {

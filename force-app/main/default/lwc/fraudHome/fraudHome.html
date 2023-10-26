@@ -1,23 +1,38 @@
 <template>
-    <template if:true={isTeamFrontlineProfile}>
-        <c-team-frontline-home></c-team-frontline-home>
+    <template if:true={isSuperProfile}>
+        <lightning-tabset>
+            <lightning-tab label="Act as a Frontline Team User" icon-name="standard:customers">
+                <c-team-frontline-home></c-team-frontline-home>
+            </lightning-tab>
+            <lightning-tab label="Act as a Fraud Team User" icon-name="custom:custom91">
+                <c-team-fraud-home></c-team-fraud-home>
+            </lightning-tab>
+            <lightning-tab label="Act as a Security Team User" icon-name="standard:approval">
+                <c-team-security-home></c-team-security-home>
+            </lightning-tab>
+        </lightning-tabset>
     </template>
-    <template if:true={isTeamFraudProfile}>
-        <c-team-fraud-home></c-team-fraud-home>
-    </template>
-    <template if:true={isTeamSecurityProfile}>
-        <c-team-security-home></c-team-security-home>
-    </template>
-    <template if:true={isUnknownProfile}>
-        <lightning-card title="Unsupported Profile">
-            <div>
-                Sorry, {userId} - {userName} since your profile is {profileName}
-                , which is not in 
-                <lightning-badge label={frontlineTeamProfileName}></lightning-badge>
-                <lightning-badge label={fraudTeamProfileName}></lightning-badge>
-                <lightning-badge label={securityTeamProfileName}></lightning-badge>
-                . You are not allowed to access Fraud Application.
-            </div>
-        </lightning-card>
+    <template if:false={isSuperProfile}>
+        <template if:true={isTeamFrontlineProfile}>
+            <c-team-frontline-home></c-team-frontline-home>
+        </template>
+        <template if:true={isTeamFraudProfile}>
+            <c-team-fraud-home></c-team-fraud-home>
+        </template>
+        <template if:true={isTeamSecurityProfile}>
+            <c-team-security-home></c-team-security-home>
+        </template>
+        <template if:true={isUnknownProfile}>
+            <lightning-card title="Unsupported Profile">
+                <div>
+                    Sorry, {userId} - {userName} since your profile is {profileName}
+                    , which is not in 
+                    <lightning-badge label={frontlineTeamProfileName}></lightning-badge>
+                    <lightning-badge label={fraudTeamProfileName}></lightning-badge>
+                    <lightning-badge label={securityTeamProfileName}></lightning-badge>
+                    . You are not allowed to access Fraud Application.
+                </div>
+            </lightning-card>
+        </template>
     </template>
 </template>
