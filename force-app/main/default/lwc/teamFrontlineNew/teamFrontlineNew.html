@@ -8,6 +8,8 @@
                 onclick={handleHideFraudDetail} 
                 slot="actions"></lightning-button>
         <div>
+            <c-fraud-process-flow>
+            </c-fraud-process-flow>
             <lightning-record-edit-form
                 onsuccess={handleSuccess}
                 onsubmit={handleSubmit}

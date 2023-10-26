@@ -37,6 +37,36 @@ qa01/q5pGidbsyont%
 qa03/ki5wlerc@rzRy 
 qa03/cnq9Dr$dpfsoh 
 
+SELECT AccountId, DataType, Field, NewValue, OldValue, CreatedById, CreatedDate
+FROM AccountHistory
+ORDER BY CreatedDate ASC
+LIMIT 10
+
+SELECT Id, ParentId, OldValue, NewValue, DataType, Field, CreatedById, CreatedDate
+FROM Fraud__History
+Order by CreatedDate DESC
+
+SELECT Id, ParentId, OldValue, NewValue, DataType, Field, CreatedById, CreatedDate
+FROM Fraud__History
+WHERE Field = 'Status__c'
+Order by CreatedDate DESC
+
+SELECT Id, Name, Status__c, Approval_Status__c,
+    (SELECT Id, Name, Document_ID__c, Sign_Status__c 
+     FROM Attestation_Docs__r),
+    (SELECT OldValue, NewValue, Field, DataType, CreatedById, CreatedDate
+     FROM Histories)
+FROM Fraud__c
+WHERE Id = 'a00Da000005qYZCIA2'
+
+SELECT Id, Name, Status__c, Approval_Status__c,
+    (SELECT OldValue, NewValue, CreatedById, CreatedDate
+     FROM Histories WHERE Field = 'Status__c' ORDER BY CreatedDate),
+    (SELECT Id, Name, Document_ID__c, Sign_Status__c 
+     FROM Attestation_Docs__r)
+FROM Fraud__c
+WHERE Id = 'a00Da000005qYZCIA2'
+
 sf project retrieve start --metadata 'ApexClass:MyApex*'
 sf project retrieve start --metadata 'Profile:Profile*'
 sfdx force:source:retrieve --metadata "Profile:Profile*"

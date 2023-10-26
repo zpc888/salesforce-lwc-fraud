@@ -144,11 +144,23 @@ export default class TeamFrontlineHome extends LightningElement {
     }
 
     async handleFraudUpdatedOk(evt) {
+        this.refreshFraudListAndDetail();
+    }
+
+    async refreshFraudListAndDetail() {
         this.isDetailFraudInEditMode = false;
         // this.detailFraudId = evt.detail.fraudId;
         await this.refreshFraudList();
         this.highlightSelectedFraud();
         this.tryToShowDetail();
+    }
+
+    async handleFraudProcessAction(evt) {
+        this.refreshFraudListAndDetail();
+    }
+
+    async handleFraudRefresh(evt) {
+        this.refreshFraudListAndDetail();
     }
 
     handleNewFraud(evt) {

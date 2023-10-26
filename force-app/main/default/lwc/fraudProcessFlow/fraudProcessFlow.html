@@ -1,0 +1,146 @@
+<template>
+    <div class="fraud-process">
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_12-of-12">
+                <svg width="1140" height="110">
+                    <ellipse cx="40" cy="50" rx="30" ry="15" style={nodeStyles.start} />
+                    <rect x="170" y="0" width="200" height="100" rx="16" ry="16" style={nodeStyles.frontline} />
+                    <rect x="470" y="0" width="200" height="100" rx="16" ry="16" style={nodeStyles.fraud} />
+                    <rect x="770" y="0" width="200" height="100" rx="16" ry="16" style={nodeStyles.security} />
+                    <ellipse cx="1100" cy="50" rx="30" ry="15" style={nodeStyles.end} />
+                    <text x="23"   y="55" style={textStyles.start}>Start</text>
+                    <text x="190"  y="50" style={textStyles.frontline}>Report By Frontline Team
+                        <tspan x="240" y="80">{frontlineAge}</tspan>
+                    </text>
+                    <text x="490"  y="50" style={textStyles.fraud}>Review By Fraud Team
+                        <tspan x="540" y="80">{fraudAge}</tspan>
+                    </text>
+                    <text x="790"  y="50" style={textStyles.security}>Approve By Security Team
+                        <tspan x="840" y="80">{securityAge}</tspan>
+                    </text>
+                    <text x="1085" y="55" style={textStyles.end}>End</text>
+                    <line x1="70"  y1="50" x2="170" y2="50" style={lineStyles.toFrontline} />
+                    <line x1="370" y1="50" x2="470" y2="50" style={lineStyles.toFraud} />
+                    <line x1="670" y1="50" x2="770" y2="50" style={lineStyles.toSecurity} />
+                    <line x1="970" y1="50" x2="1070" y2="50" style={lineStyles.toEnd} />
+                    <polygon points="166, 50, 150, 40, 150, 60" style={arrowStyles.toFrontline} />
+                    <polygon points="466, 50, 450, 40, 450, 60" style={arrowStyles.toFraud} />
+                    <polygon points="766, 50, 750, 40, 750, 60" style={arrowStyles.toSecurity} />
+                    <polygon points="1066, 50, 1050, 40, 1050, 60" style={arrowStyles.toEnd} />
+                </svg>
+            </div>
+            <div class="slds-col slds-size_12-of-12">
+                <template if:true={showTimeline}>
+                    <svg width="1140" height="60">
+                        <line x1="0" y1="38" x2="1130" y2="38"  style={lineStyles.toEnd} />
+                        <polygon points="1110, 28, 1110, 48, 1130, 38" style={arrowStyles.toEnd} />
+                        <circle cx="26" cy="38" r="8" stroke="black" stroke-width="1" fill="green" />
+                        <text x="6" y="57">{createdAt}</text>
+                        <text x="6" y="24">Created By: {createdBy}</text>
+                        <template if:true={submitToFraudTeamAt}>
+                            <circle cx="280" cy="38" r="8" stroke="black" stroke-width="1" fill="green" />
+                            <text x="190" y="57">{submitToFraudTeamAt}</text>
+                            <text x="190" y="24">Submitted By: {submitToFraudTeamBy}</text>
+                        </template>
+                        <template if:true={submitToSecurityTeamAt}>
+                            <circle cx="580" cy="38" r="8" stroke="black" stroke-width="1" fill="green" />
+                            <text x="490" y="57">{submitToSecurityTeamAt}</text>
+                            <text x="490" y="24">{status} By: {submitToSecurityTeamBy}</text>
+                        </template>
+                        <template if:true={approvedAt}>
+                            <circle cx="880" cy="38" r="8" stroke="black" stroke-width="1" fill="green" />
+                            <text x="790" y="57">{approvedAt}</text>
+                            <text x="790" y="24">Approved By: {approvedBy}</text>
+                        </template>
+                    </svg>
+                </template>
+            </div>
+
+            <!-- 
+            <div class="slds-col slds-size_2-of-12">
+                <svg width="300" height="120">
+                    <polygon points="10, 10, 210, 10, 260, 60, 210, 110, 10, 110, 60, 60" style={nodeStyles.start} />
+                    <text x="100" y="60">Start</text>
+                </svg>
+            </div>
+            <div class="slds-col slds-size_2-of-12">
+                <svg width="300" height="120">
+                    <polygon points="10, 10, 210, 10, 260, 60, 210, 110, 10, 110, 60, 60" style={nodeStyles.frontline} />
+                    <text x="68" y="60">Report By Frontline Team</text>
+                </svg>
+            </div>
+            <div class="slds-col slds-size_2-of-12">
+                <svg width="300" height="120">
+                    <polygon points="10, 10, 210, 10, 260, 60, 210, 110, 10, 110, 60, 60" style={nodeStyles.fraud} />
+                    <text x="68" y="60">Review By Fraud Team</text>
+                </svg>
+            </div>
+            <div class="slds-col slds-size_2-of-12">
+                <svg width="300" height="120">
+                    <polygon points="10, 10, 210, 10, 260, 60, 210, 110, 10, 110, 60, 60" style={nodeStyles.security} />
+                    <text x="68" y="60">Approve By Security Team</text>
+                </svg>
+            </div>
+            <div class="slds-col slds-size_2-of-12">
+                <svg width="300" height="120">
+                    <polygon points="10, 10, 210, 10, 260, 60, 210, 110, 10, 110, 60, 60" style={nodeStyles.end} />
+                    <text x="100" y="60">End</text>
+                </svg>
+            </div>
+            <div class="slds-col slds-size_1-of-12"></div>
+            <div class="slds-col slds-size_1-of-12"></div>
+            -->
+
+            <div class="slds-col slds-size_12-of-12 slds-var-p-top_small">
+                <div class="frontline-actions">
+                    <template if:true={frontlineTeamActions}>
+                       <div class="action-box slds-var-p-around_small">
+                       <lightning-radio-group name="frontlineActions"
+                          label="Choose Process Action"
+                          lwc:ref="frontlineAction"
+                          options={frontlineTeamActions}
+                          type="radio"></lightning-radio-group>
+                        <div class="slds-var-p-top_large slds-align_absolute-center">
+                        <lightning-button label="Submit Process Action"
+                                onclick={handleFrontlineProcessAction}>
+                        </lightning-button>
+                        </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="fraud-actions">
+                    <template if:true={fraudTeamActions}>
+                        <div class="action-box slds-var-p-around_small">
+                       <lightning-radio-group name="fraudActions"
+                          label="Choose Process Action"
+                          lwc:ref="fraudAction"
+                          options={fraudTeamActions}
+                          type="radio"></lightning-radio-group>
+                        <div class="slds-var-p-top_large slds-align_absolute-center">
+                        <lightning-button label="Submit Process Action"
+                                onclick={handleFraudProcessAction}>
+                        </lightning-button>
+                        </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="security-actions">
+                    <template if:true={securityTeamActions}>
+                        <div class="action-box slds-var-p-around_small">
+                       <lightning-radio-group name="securityActions"
+                          label="Choose Process Action"
+                          lwc:ref="securityAction"
+                          options={securityTeamActions}
+                          type="radio"></lightning-radio-group>
+                        <div class="slds-var-p-top_large slds-align_absolute-center">
+                        <lightning-button label="Submit Process Action"
+                                onclick={handleSecurityProcessAction}>
+                        </lightning-button>
+                        </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div> 
+</template>

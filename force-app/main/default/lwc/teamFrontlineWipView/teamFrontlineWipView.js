@@ -70,6 +70,16 @@ export default class TeamFrontlineWipView extends LightningElement {
         this.dispatchEvent(event);
     }
 
+    handleFraudProcessAction(evt) {
+        const event = new CustomEvent('refreshfraud', { 
+            detail: {
+                sourceComponent: 'WipFraudView',
+                fraudId: this.fraudId,
+            }
+        });
+        this.dispatchEvent(event);
+    }
+
     handleUpdateFraudDetail(evt) {
         const event = new CustomEvent('updatefraudclick', { 
             detail: {

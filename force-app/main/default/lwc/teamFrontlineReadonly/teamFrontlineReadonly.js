@@ -43,6 +43,7 @@ export default class TeamFrontlineReadonly extends LightningElement {
     }
 
     set fraudId(fid) {
+        this._fraudId = fid;
         getFraudItemsByFraudId({fraudId: fid}).then(r => {
             this.itemData = r.map(i => {
                 return {

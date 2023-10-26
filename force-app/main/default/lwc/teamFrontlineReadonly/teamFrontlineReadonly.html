@@ -9,6 +9,8 @@
                 slot="actions"></lightning-button>
 
         <div>
+            <c-fraud-process-flow fraud-id={fraudId}>
+            </c-fraud-process-flow>
             <lightning-record-view-form
                 record-id={fraudId}
                 object-api-name={fraudObjectApi}>
@@ -26,7 +28,7 @@
                     </div>
                     <div class="slds-col slds-size_1-of-2">
                         <template if:true={showFraudReasonOther}>
-                            <lightning-output-field field-name={fraudOtherReasonField} required></lightning-output-field>
+                            <lightning-output-field field-name={fraudOtherReasonField}></lightning-output-field>
                         </template>
                     </div>
                     <div class="slds-col slds-size_1-of-2">

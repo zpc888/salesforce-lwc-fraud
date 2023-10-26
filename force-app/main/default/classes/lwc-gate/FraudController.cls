@@ -18,6 +18,36 @@ public with sharing class FraudController {
     }
 
     @AuraEnabled
+    public static List<User> getUserNames(List<String> userIds){
+        try {
+            return [select Id, Name, UserName from User where Id in :userIds];
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+
+    @AuraEnabled
+    public static Fraud__c getFraudTrackingInfo(String fraudId){
+        try {
+            Fraud__c fraud = [
+                SELECT Id, Name, Status__c, Approval_Status__c, CreatedById, CreatedDate, LastModifiedDate, LastModifiedById,
+                    (SELECT OldValue, NewValue, CreatedById, CreatedDate
+                     FROM Histories 
+                     WHERE Field = 'Status__c' 
+                     ORDER BY CreatedDate),
+                    (SELECT Id, Name, Document_ID__c, Sign_Status__c, CreatedById, CreatedDate 
+                     FROM Attestation_Docs__r)
+                FROM Fraud__c
+                WHERE Id = :fraudId
+            ];
+            return fraud;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
     public static Fraud__c getFraudById(String fraudId){
         try {
             Fraud__c fraud = [
