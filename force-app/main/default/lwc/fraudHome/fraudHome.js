@@ -24,7 +24,8 @@ export default class FraudHome extends LightningElement {
     }
 
     get isTeamFraudProfile() {
-        return this.profileName === this.fraudTeamProfileName;
+        // return this.profileName === this.fraudTeamProfileName;
+        return true;
     }
 
     get isTeamSecurityProfile() {
@@ -32,8 +33,7 @@ export default class FraudHome extends LightningElement {
     }
 
     get isTeamFrontlineProfile() {
-        // return this.profileName === this.frontlineTeamProfileName;
-        return true;
+        return this.profileName === this.frontlineTeamProfileName;
     }
 
     get isUnknownProfile() {

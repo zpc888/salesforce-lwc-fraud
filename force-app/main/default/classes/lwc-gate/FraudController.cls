@@ -18,6 +18,42 @@ public with sharing class FraudController {
     }
 
     @AuraEnabled
+    public static List<Fraud__c> getFraudsForFraudTeam(){
+        try {
+            List<Fraud__c> frauds = [
+                SELECT Id, Name, Account__r.Id, Account__r.Name, 
+                        Account__r.Fraud_Pending_Count__c, Account__r.Fraud_Total_Count__c,
+                        Fraud_Amount__c, Fraud_Reason__c, Other_Reason_Detail__c, 
+                        Status__c, Approval_Status__c, CreatedDate
+                FROM Fraud__c
+                WHERE Status__c != 'Pending'
+                ORDER BY Name DESC
+            ];
+            return frauds;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static List<Fraud__c> getFraudsForSecurityTeam(){
+        try {
+            List<Fraud__c> frauds = [
+                SELECT Id, Name, Account__r.Id, Account__r.Name, 
+                        Account__r.Fraud_Pending_Count__c, Account__r.Fraud_Total_Count__c,
+                        Fraud_Amount__c, Fraud_Reason__c, Other_Reason_Detail__c, 
+                        Status__c, Approval_Status__c, CreatedDate
+                FROM Fraud__c
+                WHERE Status__c != 'Pending' and Status__c != 'Submitted'
+                ORDER BY Name DESC
+            ];
+            return frauds;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
     public static List<User> getUserNames(List<String> userIds){
         try {
             return [select Id, Name, UserName from User where Id in :userIds];

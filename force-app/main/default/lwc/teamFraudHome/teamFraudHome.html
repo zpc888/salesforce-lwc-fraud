@@ -1,5 +1,52 @@
 <template>
     <lightning-card title="Fraud Team">
-        <p class="slds-p-horizontal_small">Fraud list for Fraud Team</p>
+        <div slot="actions" class="slds-var-p-right_small">
+            <lightning-button-group>
+                <lightning-button-stateful 
+                    label-when-off="Unprocessed"
+                    label-when-on="Unprocessed Selected"
+                    icon-name-when-on="action:filter"
+                    selected={isSelectedUnprocessedOnly} onclick={handleSelectUnprocessedOnly}>
+                </lightning-button-stateful>
+                <lightning-button-stateful 
+                    label-when-off="All"
+                    label-when-on="All Selected"
+                    icon-name-when-on="action:filter"
+                    selected={isSelectedAll} onclick={handleSelectAll}>
+                </lightning-button-stateful>
+                <lightning-button-stateful 
+                    label-when-off="Processed"
+                    label-when-on="Processed Selected"
+                    icon-name-when-on="action:filter"
+                    selected={isSelectedProcessedOnly} onclick={handleSelectProcessedOnly}>
+                </lightning-button-stateful>
+            </lightning-button-group>
+        </div>
+        <div>
+            <div class="fraud-list">
+                <lightning-datatable hide-checkbox-column="true"
+                        onrowaction={handleRowAction}
+                        key-field="id" data={data} 
+                        columns={columns}>
+                </lightning-datatable>
+            </div>
+            <template if:true={showDetail}>
+                <div class="fraud-detail slds-box slds-border_right slds-var-p-around_small slds-var-m-around_xx-large">
+                    <template if:true={wipFraud}>
+                        <c-team-fraud-wip
+                            show-fraud-reason-other={showDetailFraudReasonOther}
+                            onhidefrauddetailclick={handleHideFraudDetail}
+                            onrefreshfraud={handleFraudRefresh}
+                            fraud-id={detailFraudId} fraud-number={detailFraud.Name}></c-team-fraud-wip>
+                    </template>
+                    <template if:false={wipFraud}>
+                        <c-team-fraud-readonly 
+                                show-fraud-reason-other={showDetailFraudReasonOther}
+                                onhidefrauddetailclick={handleHideFraudDetail}
+                                fraud-id={detailFraudId} fraud-number={detailFraud.Name}></c-team-fraud-readonly>
+                    </template>
+                </div>
+            </template>
+        </div>
     </lightning-card>
 </template>

@@ -4,20 +4,20 @@
             <lightning-button label="New" icon-name="action:new" onclick={handleNewFraud}></lightning-button>
             <lightning-button-group>
                 <lightning-button-stateful 
-                    label-when-off="Select Pending Only"
-                    label-when-on="Pending Only Selected"
+                    label-when-off="Unsubmitted"
+                    label-when-on="Unsubmitted Selected"
                     icon-name-when-on="action:filter"
                     selected={isSelectedPendingOnly} onclick={handleSelectPendingOnly}>
                 </lightning-button-stateful>
                 <lightning-button-stateful 
-                    label-when-off="Select All"
+                    label-when-off="All"
                     label-when-on="All Selected"
                     icon-name-when-on="action:filter"
                     selected={isSelectedAll} onclick={handleSelectAll}>
                 </lightning-button-stateful>
                 <lightning-button-stateful 
-                    label-when-off="Select Submitted Only"
-                    label-when-on="Submitted Only Selected"
+                    label-when-off="Submitted"
+                    label-when-on="Submitted Selected"
                     icon-name-when-on="action:filter"
                     selected={isSelectedSubmittedOnly} onclick={handleSelectSubmittedOnly}>
                 </lightning-button-stateful>

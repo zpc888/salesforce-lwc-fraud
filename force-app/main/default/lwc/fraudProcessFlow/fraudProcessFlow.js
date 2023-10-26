@@ -71,8 +71,8 @@ export default class FraudProcessFlow extends LightningElement {
             return;
         }
         getFraudTrackingInfo({fraudId: newId}).then(r => {
-            this.fraudTrackingInfo = r;
             this.resetToDefaultStyle();
+            this.fraudTrackingInfo = r;
             [this.status, this.approvalStatus, this.createdAt, this.createdBy] = 
                     [r.Status__c, r.Approval_Status__c ?? null, r.CreatedDate, r.CreatedById];
             if (this.status === 'Pending') {                     // in frontline team
@@ -226,8 +226,6 @@ export default class FraudProcessFlow extends LightningElement {
             const submitToSecurityEvent = new CustomEvent('submittosecurityteam', {
                 detail: {
                     fraudId: this.fraudId,
-                    bubbles: true,
-                    composed: true,
                 },
             });
             this.dispatchEvent(submitToSecurityEvent);
@@ -259,8 +257,6 @@ export default class FraudProcessFlow extends LightningElement {
             const approvedBySecurityEvent = new CustomEvent('approvedbysecurityteam', {
                 detail: {
                     fraudId: this.fraudId,
-                    bubbles: true,
-                    composed: true,
                 },
             });
             this.dispatchEvent(approvedBySecurityEvent);
