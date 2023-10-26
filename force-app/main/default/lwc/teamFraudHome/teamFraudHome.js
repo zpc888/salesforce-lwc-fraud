@@ -119,8 +119,6 @@ export default class TeamFraudHome extends LightningElement {
     }
 
     async refreshFraudListAndDetail() {
-        this.isDetailFraudInEditMode = false;
-        // this.detailFraudId = evt.detail.fraudId;
         await this.refreshFraudList();
         this.highlightSelectedFraud();
         this.tryToShowDetail();

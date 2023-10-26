@@ -6,14 +6,16 @@ import FRAUD_OBJECT from '@salesforce/schema/Fraud__c';
 import FRAUD_CLIENT_FIELD from '@salesforce/schema/Fraud__c.Account__c';
 import FRAUD_REASON_FIELD from '@salesforce/schema/Fraud__c.Fraud_Reason__c';
 import FRAUD_OTHER_REASON_FIELD from '@salesforce/schema/Fraud__c.Other_Reason_Detail__c';
+import FRAUD_STATUS_FIELD from '@salesforce/schema/Fraud__c.Status__c';
 
 import { fraud_item_base_columns } from 'c/fraudCommon'
 
-export default class TeamFraudWip extends LightningElement {
+export default class TeamSecurityWip extends LightningElement {
     fraudObjectApi = FRAUD_OBJECT;
     fraudClientField = FRAUD_CLIENT_FIELD;
     fraudReasonField = FRAUD_REASON_FIELD;
     fraudOtherReasonField = FRAUD_OTHER_REASON_FIELD;
+    fraudStatusField = FRAUD_STATUS_FIELD;
 
     _fraudId;
     @api fraudNumber;

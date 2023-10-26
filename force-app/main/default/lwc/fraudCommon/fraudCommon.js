@@ -122,3 +122,5 @@ export const fraud_team_fraud_list_columns = [
         class: { fieldName: 'cellClass' }
     }},
 ];
+
+export const security_team_fraud_list_columns = [...fraud_team_fraud_list_columns];
