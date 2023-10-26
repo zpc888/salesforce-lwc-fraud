@@ -15,20 +15,22 @@ export default class TeamSecurityHome extends LightningElement {
     detailFraudId;
     detailFraud;
 
-    handleSelectAll(evt) {
+    async handleSelectAll(evt) {
         this.filterFraudList(1);
     }
-    handleSelectUnapprovedOnly(evt) {
+    async handleSelectUnapprovedOnly(evt) {
         this.filterFraudList(2);
     }
-    handleSelectApprovedOnly(evt) {
+    async handleSelectApprovedOnly(evt) {
         this.filterFraudList(3);
     }
-    filterFraudList(choice) {
+    async filterFraudList(choice) {
         this.isSelectedAll = choice === 1;
         this.isSelectedUnapprovedOnly = choice === 2;
         this.isSelectedApprovedOnly = choice === 3;
-        this.refreshFraudList();
+        await this.refreshFraudList();
+        this.highlightSelectedFraud();
+        this.tryToShowDetail();
     }
 
     connectedCallback() {

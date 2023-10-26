@@ -29,20 +29,22 @@ export default class TeamFrontlineHome extends LightningElement {
     fraudReasonField = FRAUD_REASON_FIELD;
     fraudOtherReasonField = FRAUD_OTHER_REASON_FIELD;
 
-    handleSelectAll(evt) {
+    async handleSelectAll(evt) {
         this.filterFraudList(1);
     }
-    handleSelectPendingOnly(evt) {
+    async handleSelectPendingOnly(evt) {
         this.filterFraudList(2);
     }
-    handleSelectSubmittedOnly(evt) {
+    async handleSelectSubmittedOnly(evt) {
         this.filterFraudList(3);
     }
-    filterFraudList(choice) {
+    async filterFraudList(choice) {
         this.isSelectedAll = choice === 1;
         this.isSelectedPendingOnly = choice === 2;
         this.isSelectedSubmittedOnly = choice === 3;
-        this.refreshFraudList();
+        await this.refreshFraudList();
+        this.highlightSelectedFraud();
+        this.tryToShowDetail();
     }
 
     connectedCallback() {
