@@ -299,7 +299,8 @@ export default class FraudProcessFlow extends LightningElement {
 
     get securityTeamActions() {
         if (typeof this.fraudId === 'string' && !this.fraudInEditingMode) {
-            if (this.whichUser === 'security' && (this.status === 'Closed' || this.status === 'Verified')) {
+            if (this.whichUser === 'security' && (this.status === 'Closed' || this.status === 'Verified') 
+                    && this.approvalStatus === 'Pending') {
                 return [
                     { label: 'Approve "' + this.status + '" decision', value: 'Approved' },
                 ];

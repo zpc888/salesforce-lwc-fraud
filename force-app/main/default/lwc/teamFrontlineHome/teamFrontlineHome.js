@@ -127,7 +127,8 @@ export default class TeamFrontlineHome extends LightningElement {
             this.isDetailFraudInEditMode = false;
             return true;
         } else {
-            this.isNewFraud = true;
+            this.showDetail = false;
+            this.isNewFraud = false;
             this.detailFraud = null;
             this.isDetailFraudInEditMode = false;
             return false;

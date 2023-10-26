@@ -28,8 +28,8 @@ export default class FraudHome extends LightningElement {
     }
 
     get isTeamSecurityProfile() {
-        // return this.profileName === this.securityTeamProfileName;
-        return true;
+        return this.profileName === this.securityTeamProfileName;
+        // return true;
     }
 
     get isTeamFrontlineProfile() {
