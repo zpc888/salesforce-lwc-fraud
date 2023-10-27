@@ -105,3 +105,34 @@ System.debug(r.DeveloperName);
 // Frontline_Team
 
 ```
+
+## How to enable iframe to display base64 encoded pdf
+
+- how to display pdf in iframe (missing lightning web security)
+
+https://javascript.plainenglish.io/how-to-display-and-download-base64-encoded-pdf-documents-with-lightning-web-components-d4a10c7fa4c3#:~:text=Making%20a%20Base64%20encoded%20PDF%20downloadable&text=For%20this%20we%20import%20our,have%20in%20a%20separate%20property.
+
+- insert into ContentDocumentLink table then use server url to bypass iframe src=data:application/pdf;base64,
+
+https://salesforce.stackexchange.com/questions/408234/proper-way-to-store-a-pdf-from-a-rest-callout-using-contentversion-contentdocum
+
+- display pdf via server url from ContentDocumentLink
+
+https://developer.salesforce.com/blogs/2019/07/display-pdf-files-with-lightning-web-components
+
+- trusted url -- configure with data:
+- how to enable Access iframe Content in Lightning Web Security - from session management
+
+- disable LWS in scratch orgs
+ 
+https://developer.salesforce.com/docs/platform/lwc/guide/security-lwsec-enable-scratch-orgs.html
+
+6Cel800DDa000000xzou888Da000000t0E9yB4NFJhgZuqZzE1AzKoHSORxlDM5QQCSACNAZ6GqOcQUStuck5e540WwR7Qe1l4NPldL9V2R
+
+Consumer Key:
+---------------------
+3MVG99nUjAVk2edwYTM8ZHhUfVBKY.in7kFNX7ortXNlaHZ2LFiqiOASh8znJ7WtA7ftBnOGogyVcS26.MKIa
+
+Consumer Secret:
+---------------------
+ECAB64013CEC0A2DB944975E3E87228ACEDFDEBDC3382DC2B6723F7D07724950

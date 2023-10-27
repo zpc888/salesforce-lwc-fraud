@@ -4,10 +4,25 @@
             <lightning-icon icon-name="standard:record_update"></lightning-icon>
             <span class="slds-var-m-left_small">Fraud No.: {fraudNumber}</span>
         </div>
+        <template if:true={showAttestationPdf}>
+            <lightning-button label="Hide PDF" icon-name="utility:hide" 
+                    onclick={hideAttestationPdfClicked} 
+                    slot="actions"></lightning-button>
+        </template>
+        <template if:false={showAttestationPdf}>
+            <lightning-button label="Attestation PDF" 
+                    onclick={showAttestationPdfClicked} 
+                    slot="actions"></lightning-button>
+        </template>
         <lightning-button label="Close" icon-name="action:close" 
                 onclick={handleHideFraudDetail} 
                 slot="actions"></lightning-button>
         <div>
+            <template if:true={showAttestationPdf}>
+                <div class="slds-var-p-around_medium" height="1200px">
+                    <iframe src={attestationPdf} height="1200px" width="100%" scrolling="no" title="iFrame"></iframe>
+                </div>
+            </template>
             <c-fraud-process-flow 
                 which-user="fraud"
                 onsubmittosecurityteam={handleFraudProcessAction}
