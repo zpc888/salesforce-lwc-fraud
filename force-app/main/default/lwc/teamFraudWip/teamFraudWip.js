@@ -61,6 +61,8 @@ export default class TeamFraudWip extends LightningElement {
 
     set fraudId(fid) {
         this._fraudId = fid;
+        this.showAttestationPdf = false;
+        this.attestationPdf = null;
         getFraudItemsByFraudId({fraudId: fid}).then(r => {
             this.itemData = r.map(i => {
                 return {

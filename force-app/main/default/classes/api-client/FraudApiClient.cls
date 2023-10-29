@@ -59,8 +59,8 @@ public with sharing class FraudApiClient {
             req.setBody(JSON.serialize(reqPayload));
         }
         req.setHeader('Content-Type', 'application/json');
-        req.setHeader('x-oauth-client-id', 'george-zhou');
-        req.setHeader('x-oauth-client-secret', 'N0Passw0rd888');
+        req.setHeader('x-vendor-client-id', 'prot');
+        req.setHeader('x-vendor-client-secret', '13523');
         System.debug('gz debug: >>> request: ' + req.getEndpoint() + ' ' + method);
         Http http = new Http();
         HttpResponse res = http.send(req);
