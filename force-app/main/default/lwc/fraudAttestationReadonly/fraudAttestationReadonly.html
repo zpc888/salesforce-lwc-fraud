@@ -35,9 +35,9 @@
       </template>      
    </template>
    <template if:false={attestationInfo}>
-      <template if:true={editable}>
+      <template if:true={showGenButton}>
          <div class="slds-box slds-var-m-top_small slds-var-m-bottom_small slds-align_absolute-center">
-               <lightning-button variant="brand" label="Email User To Sign Attestation" title="Auto generate attestation then send user for e-sign" 
+               <lightning-button variant="brand" label="Generate Attestation To Email User for Sign" title="Auto generate attestation then send user for e-sign" 
                      icon-name="utility:sender_email" onclick={genAttestationThenSendUserForSign}></lightning-button>
          </div>
       </template>

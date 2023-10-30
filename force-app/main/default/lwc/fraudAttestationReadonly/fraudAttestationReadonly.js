@@ -100,6 +100,10 @@ export default class FraudAttestationReadonly extends LightningElement {
         return this.formatDate(this.attestationInfo?.lastModifiedDate);
     }
 
+    get showGenButton() {
+        return this.editable === true || this.editable == 'true';
+    }
+
     refresh() {
         getFraudAttestationByFraudId({fraudId: this._fraudId}).then(data => {
             // id, name, docId, signStatus, signedDocId, 
