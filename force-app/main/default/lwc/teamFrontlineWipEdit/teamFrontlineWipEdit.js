@@ -179,7 +179,7 @@ export default class TeamFrontlineWipEdit extends LightningElement {
     }
 
     moveItem(item, offset) {
-        const idx1 = this.itemData.indexOf(item);
+        const idx1 = this.itemData.findIndex(i => i.kid === item.kid);
         const idx2 = idx1 + offset;
         if (idx2 < 0 || idx2 >= this.itemData.length) {
             return;
