@@ -1,0 +1,37 @@
+<template>
+    <template if:true={hasExistingCreditReport}>
+       <div class="slds-box slds-var-m-top_small slds-var-m-bottom_small">
+       <div class="slds-grid slds-wrap slds-var-p-top_small slds-var-p-bottom_small">
+          <div class="slds-col slds-size_1-of-4">
+                <span class="label-like">Credit Score: </span>
+                <lightning-badge label={creditScoreDisplay}></lightning-badge>
+          </div>
+          <div class="slds-col slds-size_1-of-4">
+                <span class="label-like">Credit Date: </span>
+                <lightning-badge label={creditDateDisplay}></lightning-badge>
+          </div>
+          <div class="slds-col slds-size_1-of-4">
+                <lightning-button label={toggleReportLabel} title="Toggle Credit Bureau Report" icon-name={toggleReportIconName}
+                         onclick={handleToggleReportClick}>
+                </lightning-button>
+          </div>
+          <div class="slds-col slds-size_1-of-4">
+            <lightning-button variant="brand" label="Refresh Credit Bureau Report" title="Refresh Credit Bureau Report" 
+                    icon-name="action:refresh" onclick={handleGenRegenCreditReportClick}></lightning-button>
+          </div>
+       </div>
+       </div>
+ 
+       <template if:true={reportUrl}>
+             <div class="slds-var-p-around_medium" height="1200px">
+                <iframe src={reportUrl} height="1200px" width="100%" scrolling="no" title="iFrame"></iframe>
+             </div>
+       </template>      
+    </template>
+    <template if:true={shouldShowGenCreditReport}>
+        <div class="slds-box slds-var-m-top_small slds-var-m-bottom_small slds-align_absolute-center">
+            <lightning-button variant="brand" label="Pull Credit Bureau Report" title="Generate Credit Bureau Report" 
+                    icon-name="standard:asset_relationship" onclick={handleGenRegenCreditReportClick}></lightning-button>
+        </div>
+    </template>
+ </template>

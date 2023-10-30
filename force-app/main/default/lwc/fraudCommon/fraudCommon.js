@@ -125,7 +125,7 @@ export const fraud_team_fraud_list_columns = [
 
 export const security_team_fraud_list_columns = [...fraud_team_fraud_list_columns];
 
-export const format_date = (i) => {
+export const format_date = (i, withSecond = false) => {
     if (!i) {
         return i;
     }
@@ -134,9 +134,17 @@ export const format_date = (i) => {
         d = new Date();
         d.setTime(Date.parse(i));
     }
-    return new Intl.DateTimeFormat('en-CA', {
-        year: 'numeric', month: 'numeric', day: 'numeric', 
-        hour: 'numeric', minute: 'numeric', hour12: true,
-        timeZone: "America/Toronto",
-    }).format(d);
+    if (withSecond) {
+        return new Intl.DateTimeFormat('en-CA', {
+            year: 'numeric', month: 'numeric', day: 'numeric', 
+            hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true,
+            timeZone: "America/Toronto",
+        }).format(d);
+    } else {
+        return new Intl.DateTimeFormat('en-CA', {
+            year: 'numeric', month: 'numeric', day: 'numeric', 
+            hour: '2-digit', minute: '2-digit', hour12: true,
+            timeZone: "America/Toronto",
+        }).format(d);
+    }
 }

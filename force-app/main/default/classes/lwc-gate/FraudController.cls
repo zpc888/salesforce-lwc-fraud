@@ -14,7 +14,7 @@ public with sharing class FraudController {
         docRec.Sign_Status__c = 'In Progress';
         insert docRec;
 
-        String contentDocId = insertDocAndReturnDocId(fraudId, docId, base64PDF);
+        String contentDocId = insertDocAndReturnDocId(docRec.Id, docId, base64PDF);
 
         Map<String, Object> ret = new Map<String, Object>{
             'id' => docRec.Id,
@@ -28,7 +28,7 @@ public with sharing class FraudController {
         return ret;        
     }
 
-    private static String insertDocAndReturnDocId(String fraudId, String docId, String base64Data) {
+    private static String insertDocAndReturnDocId(String linkedEntityId, String docId, String base64Data) {
         Blob decoded = EncodingUtil.base64Decode(base64Data);
         ContentVersion cv = new ContentVersion();
         cv.Title = docId;
@@ -43,7 +43,7 @@ public with sharing class FraudController {
         
         // Create ContentDocumentLink
         ContentDocumentLink cdl = New ContentDocumentLink();
-        cdl.LinkedEntityId = fraudId;
+        cdl.LinkedEntityId = linkedEntityId;
         cdl.ContentDocumentId = conDocId;
         cdl.shareType = 'V';
         insert cdl;
@@ -65,6 +65,118 @@ public with sharing class FraudController {
     }
 
     @AuraEnabled
+    public static Map<String, Object> genOrRegenClientCredit(String clientId, String clientName, String existingReportId) {
+        try {
+            Map<String, Object> apiResult = FraudApiClient.genClientCreditBureauReport(clientId, clientName);
+            Map<String, Object> data = (Map<String, Object>) apiResult.get('data');
+            Map<String, Object> pdf = (Map<String, Object>) apiResult.get('pdf');
+
+            Client_Credit_Report__c report = null;
+            if (existingReportId == null) {         // new one
+                report = new Client_Credit_Report__c();
+                report.Account__c = clientId;
+                report.Credit_Score__c = (String) data.get('creditScore');
+                report.Credit_Date__c = (String) data.get('creditDate');
+                report.Report_ID__c = (String) pdf.get('documentId');
+                insert report;
+            } else {                                // update
+                report = [select Id, Account__c, Credit_Score__c, Credit_Date__c, Report_ID__c 
+                        from Client_Credit_Report__c
+                        where Id = :existingReportId];
+                report.Credit_Score__c = (String) data.get('creditScore');
+                report.Credit_Date__c = (String) data.get('creditDate');
+                report.Report_ID__c = (String) pdf.get('documentId');
+                update report;
+            }
+            String contentDocId = insertDocAndReturnDocId(report.Id, report.Report_ID__c, (String) pdf.get('base64Content'));
+            
+            Map<String, Object> ret = new Map<String, Object> {
+                'clientId' => clientId,
+                'clientName' => clientName,
+                'creditReportId' => report.Id,
+                'creditScore' => report.Credit_Score__c,
+                'creditDate' => report.Credit_Date__c,
+                'docId' => report.Report_ID__c,
+                'contentDocId' => contentDocId
+            };
+            return ret;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    // SELECT Account__r.Id, Account__r.Name, Id, Report_ID__c, Credit_Score__c, Credit_Date__c
+    // FROM Client_Credit_Report__c
+    // WHERE Account__c in (SELECT Account__c FROM Fraud__c where Id = 'a00Da000005qfRNIAY')
+    // ORDER BY CreatedDate DESC
+
+    // clientId, clientName, creditReportId, creditScore, creditDate, docId, contentDocId
+    @AuraEnabled
+    public static Map<String, Object> getClientCreditByFraudId(String fraudId){
+        try {
+            Fraud__c fraud = [
+                SELECT Account__r.Id, Account__r.Name
+                FROM Fraud__c
+                WHERE Id = :fraudId
+            ];
+            List<Client_Credit_Report__c> reports = [
+                SELECT Id, Report_ID__c, Credit_Score__c, Credit_Date__c
+                FROM Client_Credit_Report__c
+                WHERE Account__c = :fraud.Account__r.Id
+                ORDER BY CreatedDate DESC
+            ];
+            Client_Credit_Report__c report = reports != null && reports.size() > 0 ? reports[0] : null;
+            Map<String, Object> ret = new Map<String, Object> {
+                'clientId' => fraud.Account__r.Id,
+                'clientName' => fraud.Account__r.Name
+            };
+            if (report != null) {
+                ret.put('creditReportId', report.Id);
+                ret.put('creditScore', report.Credit_Score__c);
+                ret.put('creditDate', report.Credit_Date__c);
+                ret.put('docId', report.Report_ID__c);
+                List<ContentDocumentLink> docLinks = [
+                    Select ContentDocumentId 
+                    FROM ContentDocumentLink 
+                    where LinkedEntityId = :report.Id and IsDeleted = false
+                    ORDER BY SystemModstamp DESC
+                ];
+                String contentDocId = null;
+                if (docLinks != null && docLinks.size() > 0) {
+                    contentDocId = docLinks[0].ContentDocumentId;
+                }
+                ret.put('contentDocId', contentDocId);
+            }
+            return ret;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static String getLatestAttestationStatus(String fraudId){
+        try {
+            List<Fraud_Attestation_Doc__c> attestations = [
+                SELECT Id, Name, Document_ID__c, Sign_Status__c, Signed_Document_ID__c 
+                FROM Fraud_Attestation_Doc__c
+                WHERE Fraud__c = :fraudId
+                ORDER BY CreatedDate DESC
+            ];
+            if (attestations == null || attestations.size() == 0) {
+                return 'noAttestationDoc';
+            } else {
+                if (attestations[0].Signed_Document_ID__c == null) {
+                    return 'notSignedYet';
+                } else {
+                    return 'signedAlready';
+                }
+            }
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
     public static Map<String, Object> getFraudAttestationByFraudId(String fraudId){
         try {
             List<Fraud_Attestation_Doc__c> attestations = [
@@ -80,16 +192,16 @@ public with sharing class FraudController {
             List<ContentDocumentLink> docLinks = [
                 Select ContentDocumentId 
                 FROM ContentDocumentLink 
-                where LinkedEntityId = :fraudId and IsDeleted = false
-                ORDER BY SystemModstamp ASC
+                where LinkedEntityId = :attestations[0].Id and IsDeleted = false
+                ORDER BY SystemModstamp DESC
             ];
             String contentDocId = null;
             String signedContentDocId = null;
             if (docLinks.size() == 1) {
                 contentDocId = docLinks[0].ContentDocumentId;
-            } else if (docLinks.size() == 2) {
-                contentDocId = docLinks[0].ContentDocumentId;
-                signedContentDocId = docLinks[1].ContentDocumentId;
+            } else if (docLinks.size() == 2) {                      // descending order now
+                signedContentDocId = docLinks[0].ContentDocumentId;
+                contentDocId = docLinks[1].ContentDocumentId;
             } else if (docLinks.size() > 2) {
                 // something went wrong and do fine match
                 List<String> contentDocIds = new List<String>();

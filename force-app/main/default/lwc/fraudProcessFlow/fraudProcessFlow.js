@@ -6,6 +6,7 @@ import FRAUD_STATUS_FIELD from '@salesforce/schema/Fraud__c.Status__c';
 import FRAUD_APPROVAL_STATUS_FIELD from '@salesforce/schema/Fraud__c.Approval_Status__c';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getFraudTrackingInfo from '@salesforce/apex/FraudController.getFraudTrackingInfo';
+import getLatestAttestationStatus from '@salesforce/apex/FraudController.getLatestAttestationStatus';
 import getUserNames from '@salesforce/apex/FraudController.getUserNames';
 
 import { format_date } from 'c/fraudCommon'
@@ -211,6 +212,17 @@ export default class FraudProcessFlow extends LightningElement {
                 errType = 0;    // no error
             } else {
                 errType = 2;    // not signed yet
+            }
+            if (errType > 0) {
+                // maybe it is signed already, need to check db again before show alert box
+                const latestStatus = await getLatestAttestationStatus({fraudId: this._fraudId})
+                if ('noAttestationDoc' === latestStatus) {
+                    errType = 1;
+                } else if ('notSignedYet' === latestStatus) {
+                    errType = 2;
+                } else {
+                    errType = 0;
+                }
             }
             if (errType > 0) {
                 await LightningAlert.open({

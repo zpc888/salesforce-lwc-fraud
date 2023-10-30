@@ -26,14 +26,14 @@ global with sharing class FraudApexService {
         docRec.Signed_Document_ID__c = signedDocId;
         update docRec;
 
-        String signedContentDocId = insertDocAndReturnDocId(docRec.Fraud__c, signedDocId, signedBase64PDF);
+        String signedContentDocId = insertDocAndReturnDocId(docRec.Id, signedDocId, signedBase64PDF);
 
         res.statusCode = 200;
         res.addHeader('Content-Type', 'application/json;charset=UTF-8');
         res.responseBody = Blob.valueOf('{"ok": true, "signStatus": "Completed"}');
     }
 
-    private static String insertDocAndReturnDocId(String fraudId, String docId, String base64Data) {
+    private static String insertDocAndReturnDocId(String linkedEntityId, String docId, String base64Data) {
         Blob decoded = EncodingUtil.base64Decode(base64Data);
         ContentVersion cv = new ContentVersion();
         cv.Title = docId;
@@ -48,7 +48,7 @@ global with sharing class FraudApexService {
         
         // Create ContentDocumentLink
         ContentDocumentLink cdl = New ContentDocumentLink();
-        cdl.LinkedEntityId = fraudId;
+        cdl.LinkedEntityId = linkedEntityId;
         cdl.ContentDocumentId = conDocId;
         cdl.shareType = 'V';
         insert cdl;

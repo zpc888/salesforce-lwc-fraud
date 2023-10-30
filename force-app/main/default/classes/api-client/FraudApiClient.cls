@@ -1,8 +1,31 @@
 public with sharing class FraudApiClient {
     private static final String BASE_URL = 'http://3.129.216.253:8080';
     private static final String GEN_ATTESTATION_PATH = '/api/v1/fraud-attestations';
+    private static final String GEN_CLIENT_CREDIT_REPORT_PATH = '/api/v1/credit-report';
 
     public FraudApiClient() {
+    }
+
+    public static Map<String, Object> genClientCreditBureauReport(String clientId, String clientName) {
+        // email, phone are not used now, so ignoring for now
+        Map<String, Object> req = new Map<String, Object>{
+            'id' => clientId,
+            'fullName' => clientName
+        };
+/*  output Map structure
+{
+  "data": {
+    "creditScore": "string",
+    "creditDate": "2023-10-30T16:08:10.973Z"
+  },
+  "pdf": {
+    "documentId": "string",
+    "status": "string",
+    "base64Content": "string"
+  }
+}
+*/
+        return callApi(GEN_CLIENT_CREDIT_REPORT_PATH, 'POST', req);
     }
 
     public static Map<String, Object> genAttestationThenSendToSign(String fraudId) {

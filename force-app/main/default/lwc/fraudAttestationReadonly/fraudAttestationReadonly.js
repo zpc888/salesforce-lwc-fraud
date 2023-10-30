@@ -5,10 +5,10 @@ import genFraudAttestationDoc from '@salesforce/apex/FraudController.genFraudAtt
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { format_date } from 'c/fraudCommon'
 
-// const TO_VIEW_PDF_ICON = "utility:preview";
-// const TO_HIDE_PDF_ICON = "utility:hide";
-const TO_VIEW_PDF_ICON = "standard:document_preview";
-const TO_HIDE_PDF_ICON = "standard:document";
+const TO_VIEW_PDF_ICON = "utility:preview";
+const TO_HIDE_PDF_ICON = "utility:hide";
+// const TO_VIEW_PDF_ICON = "standard:document_preview";
+// const TO_HIDE_PDF_ICON = "standard:document";
 
 export default class FraudAttestationReadonly extends LightningElement {
     formatDate = format_date;
