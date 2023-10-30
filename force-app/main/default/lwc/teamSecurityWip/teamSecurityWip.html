@@ -16,52 +16,113 @@
             <c-fraud-attestation-readonly editable=false fraud-id={fraudId}>
             </c-fraud-attestation-readonly>            
             <c-client-credit-report fraud-id={fraudId}></c-client-credit-report>
-            <lightning-record-view-form
-                record-id={fraudId}
-                object-api-name={fraudObjectApi}>
-                <div class="slds-grid slds-wrap">
-                    <div class="slds-col slds-size_1-of-2">
-                        <lightning-output-field field-name={fraudClientField}></lightning-output-field>
-                    </div>
-                    <div class="slds-col slds-size_1-of-2">
-                        <lightning-input type="number"  label="Total Amount" value={fraudTotalAmount} 
-                                formatter="currency" step="0.01"
-                                disabled="disabled" read-only="true"></lightning-input>
-                    </div>
-                    <div class="slds-col slds-size_1-of-2">
-                        <lightning-output-field field-name={fraudReasonField}></lightning-output-field>
-                    </div>
-                    <div class="slds-col slds-size_1-of-2">
-                        <template if:true={showFraudReasonOther}>
-                            <lightning-output-field field-name={fraudOtherReasonField}></lightning-output-field>
-                        </template>
-                    </div>
-                    <div class="slds-col slds-size_1-of-2">
-                        <lightning-output-field field-name={fraudStatusField}></lightning-output-field>
-                    </div>
-                    <div class="slds-col slds-size_1-of-2">
-                    </div>
-                    <div class="slds-col slds-size_2-of-2 slds-var-p-around_medium">
-                         <lightning-card>
-                            <div slot="title">
-                                <span class="slds-var-m-left_small">Transaction Items</span>
+            <template if:false={enterNoteEditMode}>
+                <lightning-record-view-form
+                    record-id={fraudId}
+                    object-api-name={fraudObjectApi}>
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-output-field field-name={fraudClientField}></lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-input type="number"  label="Total Amount" value={fraudTotalAmount} 
+                                    formatter="currency" step="0.01"
+                                    disabled="disabled" read-only="true"></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-output-field field-name={fraudReasonField}></lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <template if:true={showFraudReasonOther}>
+                                <lightning-output-field field-name={fraudOtherReasonField}></lightning-output-field>
+                            </template>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-output-field field-name={fraudStatusField}></lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-button class="slds-var-m-right_small" label="Edit Security Note" 
+                                icon-name="standard:note" onclick={handleTryToUpdateSecurityNote}></lightning-button>
+                        </div>
+                        <div class="slds-col slds-size_2-of-2">
+                            <lightning-output-field field-name={fraudSecurityNoteField}></lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_2-of-2 slds-var-p-around_medium">
+                            <lightning-card>
+                                <div slot="title">
+                                    <span class="slds-var-m-left_small">Transaction Items</span>
+                                </div>
+                                <div>
+                                    <lightning-datatable hide-checkbox-column="true"
+                                        key-field="kid"
+                                        data={itemData}
+                                        columns={itemCols}
+                                    ></lightning-datatable>
+                                </div>
+                            </lightning-card>
+                        </div>
+                        <div class="slds-col slds-size_2-of-2 slds-var-p-top_medium">
+                            <div class="slds-align_absolute-center">
+                                <lightning-button class="slds-var-m-right_small" label="Cancel" onclick={handleHideFraudDetail}></lightning-button>
                             </div>
-                            <div>
-                                <lightning-datatable hide-checkbox-column="true"
-                                    key-field="kid"
-                                    data={itemData}
-                                    columns={itemCols}
-                                ></lightning-datatable>
-                            </div>
-                        </lightning-card>
-                    </div>
-                    <div class="slds-col slds-size_2-of-2 slds-var-p-top_medium">
-                        <div class="slds-align_absolute-center">
-                            <lightning-button class="slds-var-m-right_small" label="Cancel" onclick={handleHideFraudDetail}></lightning-button>
                         </div>
                     </div>
-                </div>
-            </lightning-record-view-form>
+                </lightning-record-view-form>
+            </template>
+            <template if:true={enterNoteEditMode}>
+                <lightning-record-edit-form
+                    onsuccess={handleSuccess}
+                    record-id={fraudId}
+                    object-api-name={fraudObjectApi}>
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-output-field field-name={fraudClientField}></lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-input type="number"  label="Total Amount" value={fraudTotalAmount} 
+                                    formatter="currency" step="0.01"
+                                    disabled="disabled" read-only="true"></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-output-field field-name={fraudReasonField}></lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <template if:true={showFraudReasonOther}>
+                                <lightning-output-field field-name={fraudOtherReasonField}></lightning-output-field>
+                            </template>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-output-field field-name={fraudStatusField}></lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-button class="slds-var-m-right_small" label="Save Edit" 
+                                icon-name="utility:save" type="submit"></lightning-button>
+                        </div>
+                        <div class="slds-col slds-size_2-of-2">
+                            <lightning-input-field field-name={fraudSecurityNoteField}></lightning-input-field>
+                        </div>
+                        <div class="slds-col slds-size_2-of-2 slds-var-p-around_medium">
+                            <lightning-card>
+                                <div slot="title">
+                                    <span class="slds-var-m-left_small">Transaction Items</span>
+                                </div>
+                                <div>
+                                    <lightning-datatable hide-checkbox-column="true"
+                                        key-field="kid"
+                                        data={itemData}
+                                        columns={itemCols}
+                                    ></lightning-datatable>
+                                </div>
+                            </lightning-card>
+                        </div>
+                        <div class="slds-col slds-size_2-of-2 slds-var-p-top_medium">
+                            <div class="slds-align_absolute-center">
+                                <lightning-button class="slds-var-m-right_small" label="Cancel" onclick={handleHideFraudDetail}></lightning-button>
+                            </div>
+                        </div>
+                    </div>
+                </lightning-record-edit-form>
+            </template>
         </div>
         
     </lightning-card>

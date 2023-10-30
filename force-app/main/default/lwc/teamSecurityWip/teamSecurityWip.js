@@ -7,6 +7,7 @@ import FRAUD_CLIENT_FIELD from '@salesforce/schema/Fraud__c.Account__c';
 import FRAUD_REASON_FIELD from '@salesforce/schema/Fraud__c.Fraud_Reason__c';
 import FRAUD_OTHER_REASON_FIELD from '@salesforce/schema/Fraud__c.Other_Reason_Detail__c';
 import FRAUD_STATUS_FIELD from '@salesforce/schema/Fraud__c.Status__c';
+import FRAUD_SECURITY_NOTE_FIELD from '@salesforce/schema/Fraud__c.Security_Note__c';
 
 import { fraud_item_base_columns } from 'c/fraudCommon'
 
@@ -16,6 +17,7 @@ export default class TeamSecurityWip extends LightningElement {
     fraudReasonField = FRAUD_REASON_FIELD;
     fraudOtherReasonField = FRAUD_OTHER_REASON_FIELD;
     fraudStatusField = FRAUD_STATUS_FIELD;
+    fraudSecurityNoteField = FRAUD_SECURITY_NOTE_FIELD;
 
     _fraudId;
     @api fraudNumber;
@@ -23,6 +25,8 @@ export default class TeamSecurityWip extends LightningElement {
 
     itemCols = [...fraud_item_base_columns];
     itemData;
+
+    enterNoteEditMode = false;
 
     get fraudTotalAmount() {
         return (this.itemData || [])
@@ -74,4 +78,15 @@ export default class TeamSecurityWip extends LightningElement {
         this.dispatchEvent(event);
     }
 
+    handleTryToUpdateSecurityNote(evt) {
+        this.enterNoteEditMode = true;
+    }
+
+    // handleSubmit(event) {
+    //     this.enterNoteEditMode = false;
+    // }
+
+    handleSuccess(event) {
+        this.enterNoteEditMode = false;
+    }
 }

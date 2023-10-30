@@ -8,6 +8,7 @@ import FRAUD_REASON_FIELD from '@salesforce/schema/Fraud__c.Fraud_Reason__c';
 import FRAUD_OTHER_REASON_FIELD from '@salesforce/schema/Fraud__c.Other_Reason_Detail__c';
 import FRAUD_STATUS_FIELD from '@salesforce/schema/Fraud__c.Status__c';
 import FRAUD_APPROVAL_STATUS_FIELD from '@salesforce/schema/Fraud__c.Approval_Status__c';
+import FRAUD_SECURITY_NOTE_FIELD from '@salesforce/schema/Fraud__c.Security_Note__c';
 
 import { fraud_item_base_columns } from 'c/fraudCommon'
 
@@ -18,6 +19,7 @@ export default class TeamSecurityReadonly extends LightningElement {
     fraudOtherReasonField = FRAUD_OTHER_REASON_FIELD;
     fraudStatusField = FRAUD_STATUS_FIELD;
     fraudApprovalStatusField = FRAUD_APPROVAL_STATUS_FIELD;
+    fraudSecurityNoteField = FRAUD_SECURITY_NOTE_FIELD;
 
     _fraudId;
     @api fraudNumber;
