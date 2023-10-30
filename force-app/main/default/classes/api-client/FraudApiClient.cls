@@ -27,10 +27,10 @@ public with sharing class FraudApiClient {
         }
         Map<String, Object> req = new Map<String, Object>{
             'signer' => new Map<String, Object>{
-                'id' => UserInfo.getUserId(),
-                'fullName' => 'David Junior',
-                'email' => 'David.Smith@nowhere.com',
-                'phone' => '416-886-9081'
+                'id' => fraud.Account__r.Id,
+                'fullName' => fraud.Account__r.Name,
+                'email' => 'email-is-not-used-for-now@nowhere.com',
+                'phone' => '416-886-8866'
             },
             'fraud' => new Map<String, Object> {
                 'fraudNumber' => fraud.Name,
@@ -40,11 +40,11 @@ public with sharing class FraudApiClient {
                 'items' => items
             },
             'callback' => new Map<String, Object>{
-                'callbackUrl' => 'https://your.sf.com/services/apexrest/your-service-path',
-                'oauthUrl' => 'https://your.sf.com/services/oauth2/token',
+                'callbackUrl' => 'https://ability-business-3077-dev-ed.scratch.my.salesforce.com/services/apexrest/fraud/v1/esign/status/callback/after-esigned',
+                'oauthUrl' => 'https://ability-business-3077-dev-ed.scratch.my.salesforce.com/services/oauth2/token',
                 'grantType'=> 'client_credentials',
-                'clientId' => 'your-client-id',
-                'clientSecret' => 'your-client-secret'
+                'clientId' => '3MVG99nUjAVk2edwYTM8ZHhUfVBKY.in7kFNX7ortXNlaHZ2LFiqiOASh8znJ7WtA7ftBnOGogyVcS26.MKIa',
+                'clientSecret' => 'ECAB64013CEC0A2DB944975E3E87228ACEDFDEBDC3382DC2B6723F7D07724950'
             }
         };
 

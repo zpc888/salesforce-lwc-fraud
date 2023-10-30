@@ -1,7 +1,6 @@
 import { LightningElement, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getFraudItemsByFraudId from '@salesforce/apex/FraudController.getFraudItemsByFraudId';
-import genFraudAttestationDoc from '@salesforce/apex/FraudController.genFraudAttestationDoc';
 
 import FRAUD_OBJECT from '@salesforce/schema/Fraud__c';
 import FRAUD_CLIENT_FIELD from '@salesforce/schema/Fraud__c.Account__c';
@@ -20,33 +19,11 @@ export default class TeamFraudWip extends LightningElement {
     @api fraudNumber;
     @api showFraudReasonOther;
 
-    showAttestationPdf = false;
-    attestationPdf = null;
+    // iframe src to point to attestationPdf, but security keeps saying failure
+    // this.attestationPdf = 'data:application/pdf;base64,' + r;
 
     itemCols = [...fraud_item_base_columns];
     itemData;
-
-    hideAttestationPdfClicked(event) {
-        this.showAttestationPdf = false;
-        this.attestationPdf = null;
-    }
-
-    showAttestationPdfClicked(event) {
-        genFraudAttestationDoc({fraudId: this._fraudId}).then(r => {
-            this.showAttestationPdf = true;
-            // this.attestationPdf = 'data:application/pdf;base64,' + r;
-            this.attestationPdf = '/sfc/servlet.shepherd/document/download/' + r;
-        }).catch(err => {
-            const errEvent = new ShowToastEvent({
-                title: 'Fraud Attestation Error',
-                message: 'Fail to Generate Fraud Attestation Report: ' + err.body?.message,
-                variant: 'error',
-            });
-            this.dispatchEvent(errEvent);
-            this.showAttestationPdf = false;
-            this.attestationPdf = null;
-        });
-    }
 
     get fraudTotalAmount() {
         return (this.itemData || [])
@@ -61,8 +38,6 @@ export default class TeamFraudWip extends LightningElement {
 
     set fraudId(fid) {
         this._fraudId = fid;
-        this.showAttestationPdf = false;
-        this.attestationPdf = null;
         getFraudItemsByFraudId({fraudId: fid}).then(r => {
             this.itemData = r.map(i => {
                 return {

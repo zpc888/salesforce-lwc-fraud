@@ -1,0 +1,45 @@
+<template>
+   <template if:true={attestationInfo}>
+      <div class="slds-box slds-var-m-top_small slds-var-m-bottom_small">
+      <div class="slds-grid slds-wrap slds-var-p-top_small slds-var-p-bottom_small">
+         <div class="slds-col slds-size_1-of-4">
+               <lightning-button label={toggleUnsignedLabel} title="Toggle Fraud Attestation action" icon-name={toggleUnsignedIconName}
+                        onclick={handleToggleUnsignedClick}>
+               </lightning-button>
+         </div>
+         <div class="slds-col slds-size_1-of-4">
+            <span>Attestation Report #{attestationInfo.docId} was generated at {generatedAt}</span>
+         </div>
+         <template if:true={isSigned}>
+               <div class="slds-col slds-size_1-of-4">
+                     <lightning-button label={toggleSignedLabel} title="Toggle Fraud Attestation action" icon-name={toggleSignedIconName}
+                              onclick={handleToggleSignedClick}>
+                     </lightning-button>
+               </div>
+               <div class="slds-col slds-size_1-of-4">
+                  <span>Signed at {signedAt}</span>
+               </div>
+         </template>
+         <template if:false={isSigned}>
+            <div class="slds-col slds-size_1-of-2">
+               <span>Unsigned</span>
+            </div>      
+         </template>
+      </div>
+      </div>
+
+      <template if:true={pdfUrl}>
+            <div class="slds-var-p-around_medium" height="1200px">
+               <iframe src={pdfUrl} height="1200px" width="100%" scrolling="no" title="iFrame"></iframe>
+            </div>
+      </template>      
+   </template>
+   <template if:false={attestationInfo}>
+      <template if:true={editable}>
+         <div class="slds-box slds-var-m-top_small slds-var-m-bottom_small slds-align_absolute-center">
+               <lightning-button variant="brand" label="Email User To Sign Attestation" title="Auto generate attestation then send user for e-sign" 
+                     icon-name="utility:sender_email" onclick={genAttestationThenSendUserForSign}></lightning-button>
+         </div>
+      </template>
+   </template>
+</template>

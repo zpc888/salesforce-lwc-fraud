@@ -8,6 +8,8 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getFraudTrackingInfo from '@salesforce/apex/FraudController.getFraudTrackingInfo';
 import getUserNames from '@salesforce/apex/FraudController.getUserNames';
 
+import { format_date } from 'c/fraudCommon'
+
 const ACTIVE_COLOR = 'rgb(144, 238, 144)';
 const INACTIVE_COLOR = 'rgb(211, 211, 211)';
 const CONNECTOR_COLOR = 'rgb(0, 0, 0)';
@@ -22,6 +24,8 @@ const DEFAULT_NODE_STYLES = {
 };
 
 export default class FraudProcessFlow extends LightningElement {
+    formatDate = format_date;
+
     _fraudId;
     fraudTrackingInfo;
 
@@ -313,21 +317,7 @@ export default class FraudProcessFlow extends LightningElement {
         return this._fraudId;
     }
 
-    formatDate(i) {
-        if (!i) {
-            return i;
-        }
-        let d = i;
-        if (typeof i === 'string') {
-            d = new Date();
-            d.setTime(Date.parse(i));
-        }
-        return new Intl.DateTimeFormat('en-CA', {
-            year: 'numeric', month: 'numeric', day: 'numeric', 
-            hour: 'numeric', minute: 'numeric', hour12: true,
-            timeZone: "America/Toronto",
-        }).format(d);
-    }
+
 
     calcPeriod(i1, i2) {
         let [d1, d2] = [i1, i2];

@@ -124,3 +124,19 @@ export const fraud_team_fraud_list_columns = [
 ];
 
 export const security_team_fraud_list_columns = [...fraud_team_fraud_list_columns];
+
+export const format_date = (i) => {
+    if (!i) {
+        return i;
+    }
+    let d = i;
+    if (typeof i === 'string') {
+        d = new Date();
+        d.setTime(Date.parse(i));
+    }
+    return new Intl.DateTimeFormat('en-CA', {
+        year: 'numeric', month: 'numeric', day: 'numeric', 
+        hour: 'numeric', minute: 'numeric', hour12: true,
+        timeZone: "America/Toronto",
+    }).format(d);
+}

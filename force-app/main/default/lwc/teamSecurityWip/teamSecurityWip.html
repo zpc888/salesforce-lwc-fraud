@@ -13,6 +13,8 @@
                 onapprovedbysecurityteam={handleFraudProcessAction}
                 fraud-id={fraudId}>
             </c-fraud-process-flow>
+            <c-fraud-attestation-readonly editable=false fraud-id={fraudId}>
+            </c-fraud-attestation-readonly>            
             <lightning-record-view-form
                 record-id={fraudId}
                 object-api-name={fraudObjectApi}>

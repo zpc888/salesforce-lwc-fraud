@@ -1,6 +1,6 @@
 public with sharing class FraudController {
     @AuraEnabled
-    public static String genFraudAttestationDoc(String fraudId){
+    public static Map<String, Object> genFraudAttestationDoc(String fraudId){
         // String base64PDF = 'JVBERi0xLjYKJfbk/N8KMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovVmVyc2lvbiAvMS42Ci9QYWdlcyAyIDAgUgo+PgplbmRvYmoKMTEgMCBvYmoKPDwKL0xlbmd0aCA1OTgKL0ZpbHRlciAvRmxhdGVEZWNvZGUKPj4Kc3RyZWFtDQp4nI2Tz47aMBDG73mKOfSwlZZgO47tcFugrFqp3WrhBdxgSiqIV46p1Lfv2CTb8KcBcTDyeL7ffDOT8dz8rkrz+jyFsklIKoUSGZCUMppLPBnPKIemTAhIwUBQBhkBZ5JNMl0l4wUFxmG1wXD44TsqZZoxTihIKtKMcMJgtU4enqazEcHbhdOHNbyaN+v8R1j9Sj6tYvI+wHNWcDg/j3BKWrFQAn2v4J07XuC1CKVQBSIvUiq4LCJ6brSDL3Zbw3Jf+e0kYgmMMpZSTlR8M9WNWYOtIQZpp4q5Xlc7rFc3GFxYBy9+a1wr0b16BLxsDGhnwj/YBJOHnak9eKfrRpe+snWTdmRWpFyExiH58wb+2ENMra2P6VVd+Up7hNlNq9yTeYS3HZZjoKl+1uAtlLbeVG5/VGckOqMpOmtbv8R32h+cmUBXQJ6luTg6/+6q2qP3b3p//UFIx/hc+y4eRja0KUxhciHiqFhvWTJQJ7uSU5livbgVjEQUIywbUTJiKEgnGT1dEArPQ1zUyJkCiudxRacnC8IxnEVH4wXHV6GSh9W/tkaDHfAGivIjC/f8KouKa7CvxpVbXfs7IZlqDZH/GboGmWmHszzsf7RLepvDb3ByRlIh+BXW094ezu2oXCkG4eRF+IQlfobtdHgxPB3S6ued/uk6sOI+UhhOQA0O54I1s40v7X2EMJloZmgyFwSlpEAhosR9FH6DkqPuJeWDfBRK4rT7kNB80W/+8rz5XJ4L9fNjS0W/pcuLlg4rxJaJvpnzEm4p8BsKoR2XChft+Asq7o9bDQplbmRzdHJlYW0KZW5kb2JqCjEyIDAgb2JqCjw8Ci9MZW5ndGggMjU1Ci9UeXBlIC9PYmpTdG0KL04gOQovRmlsdGVyIC9GbGF0ZURlY29kZQovRmlyc3QgNTIKPj4Kc3RyZWFtDQp4nM1Ry2rDMBD8lfmBVF5ZtmMIgTo0FEqhuIEeQg6OLYIgkYpll/bvu5Kgj1sLPfSgZXd2Z3YHSWTIoSQUSGUoQEWFEpJyVJB1jSXypUQNVRKIB5TCaiV2b88a4qE7aQ9xZwaPfc5KLQ4QGzfbCYT1+vskxL0eTNe4V+yzqwzhlSQ5VnWIhzA2aubKKCVa7d089rxCJWDj7MR9D6IIpA1bRvnwLwCxg0jYSnaRspydpEyxm5QVwdEnL50a5cTjfJxiGUCCaDqvU+dWn1/0ZPpu0bjzAHFjezcYe4J4MvbaevMB/EZ1Zy7aL1p36exfSfI/jEaP//jCn0u+A79EyKINCmVuZHN0cmVhbQplbmRvYmoKMTMgMCBvYmoKPDwKL0xlbmd0aCA0NgovUm9vdCAxIDAgUgovSUQgWzwyNTc0QTM2NzNBOEQxMDcxQjlBMDEyNjJFOTA3OEQwNT4gPDI1NzRBMzY3M0E4RDEwNzFCOUEwMTI2MkU5MDc4RDA1Pl0KL1R5cGUgL1hSZWYKL1NpemUgMTQKL0luZGV4IFswIDEzXQovVyBbMSAyIDFdCi9GaWx0ZXIgL0ZsYXRlRGVjb2RlCj4+CnN0cmVhbQ0KeJwVw8kNACAMBLHZcIQHEp3RfxeUAIslA1csgvnLw4tXb949fYiN4vAARy0C8w0KZW5kc3RyZWFtCmVuZG9iagpzdGFydHhyZWYKMTExMAolJUVPRgo=';
         Map<String, Object> res = FraudApiClient.genAttestationThenSendToSign(fraudId);
         String docId = (String)res.get('documentId');
@@ -14,14 +14,25 @@ public with sharing class FraudController {
         docRec.Sign_Status__c = 'In Progress';
         insert docRec;
 
-        return insertDocAndReturnDocId(fraudId, base64PDF);
+        String contentDocId = insertDocAndReturnDocId(fraudId, docId, base64PDF);
+
+        Map<String, Object> ret = new Map<String, Object>{
+            'id' => docRec.Id,
+            'name' => docRec.Name,
+            'docId' => docRec.Document_ID__c,
+            'signStatus' => docRec.Sign_Status__c,
+            'createdDate' => System.now(),
+            'lastModifiedDate' => docRec.LastModifiedDate,
+            'contentDocId' => contentDocId
+        };
+        return ret;        
     }
 
-    private static String insertDocAndReturnDocId(String fraudId, String base64Data) {
+    private static String insertDocAndReturnDocId(String fraudId, String docId, String base64Data) {
         Blob decoded = EncodingUtil.base64Decode(base64Data);
         ContentVersion cv = new ContentVersion();
-        cv.Title = 'Fraud Report :' + fraudId;
-        cv.PathOnClient = 'Fraud_Attestation_' + fraudId + '.pdf';
+        cv.Title = docId;
+        cv.PathOnClient = 'generated-' + docId + '.pdf';
         cv.VersionData = decoded;
         cv.IsMajorVersion = true;
         insert cv;
@@ -51,6 +62,65 @@ public with sharing class FraudController {
         
     //     insert rc;        
 
+    }
+
+    @AuraEnabled
+    public static Map<String, Object> getFraudAttestationByFraudId(String fraudId){
+        try {
+            List<Fraud_Attestation_Doc__c> attestations = [
+                SELECT Id, Name, Document_ID__c, Sign_Status__c, Signed_Document_ID__c, 
+                        CreatedDate, LastModifiedDate
+                FROM Fraud_Attestation_Doc__c
+                WHERE Fraud__c = :fraudId
+                ORDER BY CreatedDate DESC
+            ];
+            if (attestations.size() == 0) {
+                return new Map<String, Object>();
+            }
+            List<ContentDocumentLink> docLinks = [
+                Select ContentDocumentId 
+                FROM ContentDocumentLink 
+                where LinkedEntityId = :fraudId and IsDeleted = false
+                ORDER BY SystemModstamp ASC
+            ];
+            String contentDocId = null;
+            String signedContentDocId = null;
+            if (docLinks.size() == 1) {
+                contentDocId = docLinks[0].ContentDocumentId;
+            } else if (docLinks.size() == 2) {
+                contentDocId = docLinks[0].ContentDocumentId;
+                signedContentDocId = docLinks[1].ContentDocumentId;
+            } else if (docLinks.size() > 2) {
+                // something went wrong and do fine match
+                List<String> contentDocIds = new List<String>();
+                for (ContentDocumentLink dl: docLinks) {
+                    contentDocIds.add(dl.ContentDocumentId);
+                }
+                List<ContentVersion> contentVers = [select Title, ContentDocumentId 
+                        FROM ContentVersion where ContentDocumentId in :contentDocIds];
+                for (ContentVersion cv: contentVers) {
+                    if (cv.Title == attestations[0].Document_ID__c) {
+                        contentDocId = cv.ContentDocumentId;
+                    } else if (cv.Title == attestations[0].Signed_Document_ID__c) {
+                        signedContentDocId = cv.ContentDocumentId;
+                    }
+                }
+            }
+            Map<String, Object> ret = new Map<String, Object>{
+                'id' => attestations[0].Id,
+                'name' => attestations[0].Name,
+                'docId' => attestations[0].Document_ID__c,
+                'signStatus' => attestations[0].Sign_Status__c,
+                'signedDocId' => attestations[0].Signed_Document_ID__c,
+                'createdDate' => attestations[0].CreatedDate,
+                'lastModifiedDate' => attestations[0].LastModifiedDate,
+                'contentDocId' => contentDocId,
+                'signedContentDocId' => signedContentDocId
+            };
+            return ret;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
     }
 
     // @AuraEnabled(cacheable = true)
