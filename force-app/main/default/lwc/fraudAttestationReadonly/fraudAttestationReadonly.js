@@ -19,6 +19,8 @@ export default class FraudAttestationReadonly extends LightningElement {
     attestationInfo;
     pdfUrl;
 
+    timeoutRef;
+
     toggleUnsignedIconName = TO_VIEW_PDF_ICON;
     toggleSignedIconName = TO_VIEW_PDF_ICON;
 
@@ -71,7 +73,19 @@ export default class FraudAttestationReadonly extends LightningElement {
         this.toggleUnsignedIconName = TO_VIEW_PDF_ICON;
         this.toggleSignedIconName = TO_VIEW_PDF_ICON;
         this.attestationInfo = null;
+        this.releaseResources();
         this.refresh();
+    }
+
+    disconnectedCallback() {
+        this.releaseResources();
+    }
+
+    releaseResources() {
+        if (this.editable && this.timeoutRef) {
+            clearTimeout(this.timeoutRef);
+            this.timeoutRef = null;
+        }
     }
 
     get isSigned() {
@@ -92,6 +106,9 @@ export default class FraudAttestationReadonly extends LightningElement {
             // contentDocId, signedContentDocId, createdDate, lastModifiedDate
             if (data.id) {
                 this.attestationInfo = data;
+                if (this.editable) {
+                    this.autoRefreshIfNotSignedYet();
+                }
             } else {
                 this.attestationInfo = undefined;
             }
@@ -106,9 +123,23 @@ export default class FraudAttestationReadonly extends LightningElement {
         })
     }
 
+    autoRefreshIfNotSignedYet() {
+        if (this.attestationInfo.signedDocId) {
+            this.releaseResources();
+        } else {
+            this.timeoutRef = setTimeout(() => {
+                this.refresh();
+            }, 10000);
+        }
+    }
+
     genAttestationThenSendUserForSign(event) {
         genFraudAttestationDoc({fraudId: this._fraudId}).then(r => {
             this.attestationInfo = r;
+            this.releaseResources();
+            this.timeoutRef = setTimeout(() => {
+                this.refresh();
+            }, 20000);
         }).catch(err => {
             const errEvent = new ShowToastEvent({
                 title: 'Fraud Attestation Error',
