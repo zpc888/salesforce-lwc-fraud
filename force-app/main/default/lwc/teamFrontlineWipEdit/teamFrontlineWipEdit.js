@@ -108,7 +108,9 @@ export default class TeamFrontlineWipEdit extends LightningElement {
             return;
         }
         const fields = event.detail.fields;
-        fields.Status__c = 'Pending';
+        if (fields.Fraud_Reason__c !== 'Other') {
+            fields.Other_Reason_Detail__c = null;
+        }
         this.template.querySelector('lightning-record-edit-form').submit(fields);
     }
     
