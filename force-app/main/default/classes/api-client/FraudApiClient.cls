@@ -30,7 +30,7 @@ public with sharing class FraudApiClient {
 
     public static Map<String, Object> genAttestationThenSendToSign(String fraudId) {
         Fraud__c fraud = [
-            SELECT Id, Name, Account__r.Id, Account__r.Name, 
+            SELECT Id, Name, Account__c, 
                     Fraud_Amount__c, Fraud_Reason__c, Other_Reason_Detail__c, 
                     Status__c, Approval_Status__c, CreatedDate, lastModifiedDate, 
                     (SELECT Id, Name, Item_Order__c, Tx_Date__c, Card_Number__c, Amount__c, Merchant__c 
@@ -38,6 +38,23 @@ public with sharing class FraudApiClient {
             FROM Fraud__c
             WHERE id = :fraudId
         ];
+        Account acct = [
+            select Id, Name, Phone, (select Id, Phone, Email from Contacts)
+            from Account
+            where Id = :fraud.Account__c
+        ];
+        List<Contact> acctContacts = acct.Contacts;
+        String phone = acct.Phone;
+        String email = null;
+        if (acctContacts != null && acctContacts.size() > 0) {
+            email = acctContacts[0].Email;
+            if (phone == null) {
+                phone = acctContacts[0].Phone;
+            }
+        }
+        if (email == null) {
+            throw new AppException('Please add email to contact of client: ' + acct.Name);
+        }
 
         List<Map<String, Object>> items = new List<Map<String, Object>>();
         for (Fraud_Item__c item: fraud.Fraud_Items__r) {
@@ -50,14 +67,14 @@ public with sharing class FraudApiClient {
         }
         Map<String, Object> req = new Map<String, Object>{
             'signer' => new Map<String, Object>{
-                'id' => fraud.Account__r.Id,
-                'fullName' => fraud.Account__r.Name,
-                'email' => 'email-is-not-used-for-now@nowhere.com',
-                'phone' => '416-886-8866'
+                'id' => acct.Id,
+                'fullName' => acct.Name,
+                'email' => email,
+                'phone' => phone
             },
             'fraud' => new Map<String, Object> {
                 'fraudNumber' => fraud.Name,
-                'clientName' => fraud.Account__r.Name,
+                'clientName' => acct.Name,
                 'fraudReason' => fraud.Fraud_Reason__c,
                 'otherReasonDetail' => Fraud.Other_Reason_Detail__c,
                 'items' => items

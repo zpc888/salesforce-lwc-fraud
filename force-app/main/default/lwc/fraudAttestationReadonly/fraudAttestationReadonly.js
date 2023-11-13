@@ -147,7 +147,7 @@ export default class FraudAttestationReadonly extends LightningElement {
         }).catch(err => {
             const errEvent = new ShowToastEvent({
                 title: 'Fraud Attestation Error',
-                message: 'Fail to Generate Fraud Attestation Report: ' + err.body?.message,
+                message: 'Fail to Generate Fraud Attestation: ' + err.body?.message,
                 variant: 'error',
             });
             this.dispatchEvent(errEvent);
