@@ -82,8 +82,9 @@ public with sharing class FraudApiClient {
             });
         }
         Map<String, Object> req = new Map<String, Object>{
+                // 'id' => acct.Id,             // when calling docu-sign, it has issue to be a recipient id
             'signer' => new Map<String, Object>{
-                'id' => acct.Id,
+                'id' => fraud.Name.substring(3),
                 'fullName' => acct.Name,
                 'email' => email,
                 'phone' => phone
