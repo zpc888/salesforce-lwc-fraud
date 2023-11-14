@@ -2,8 +2,24 @@ public with sharing class FraudApiClient {
     private static final String BASE_URL = 'http://3.129.216.253:8080';
     private static final String GEN_ATTESTATION_PATH = '/api/v1/fraud-attestations';
     private static final String GEN_CLIENT_CREDIT_REPORT_PATH = '/api/v1/credit-report';
+    private static final String DOCUSIGN_EVENT_NOTIFY_PATH = '/api/v1/docusign/event/notification';
 
     public FraudApiClient() {
+    }
+
+    public static Map<String, Object> notifyEsignStatus(Map<String, String> params, Map<String, Object> jsonObj) {
+        String finalPath = DOCUSIGN_EVENT_NOTIFY_PATH;
+        if (params != null && params.size() > 0) {
+            for (String k: params.keySet()) {
+                if (finalPath.length() == DOCUSIGN_EVENT_NOTIFY_PATH.length()) {
+                    finalPath = finalPath + '?';
+                } else {
+                    finalPath = finalPath + '&';
+                }
+                finalPath = finalPath + k + '=' + params.get(k);
+            }
+        }
+        return callApi(finalPath, 'POST', jsonObj);
     }
 
     public static Map<String, Object> genClientCreditBureauReport(String clientId, String clientName) {
