@@ -13,7 +13,7 @@ global class UserLoginController {
     @AuraEnabled
     global static string selfRegister(String firstName, String lastName, String phone, String email) {
         try {
-            
+            return 'ok';
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }

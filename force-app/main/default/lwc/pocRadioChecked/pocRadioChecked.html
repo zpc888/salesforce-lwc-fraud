@@ -1,6 +1,11 @@
 <template>
     <div class="prot-radio">
-        <input type="radio" name="pocRadio" {checked} />
+        <template lwc:if={checked}>
+            <input type="radio" name="pocRadio" checked />
+        </template>
+        <template lwc:else>
+            <input type="radio" name="pocRadio" checked />
+        </template>
         <label>Test Radio checked property using variable</label>
     </div>
 </template>
