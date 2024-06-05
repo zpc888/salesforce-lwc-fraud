@@ -1,7 +1,7 @@
 {
-  "orgName": "zpc company",
+  "orgName": "zpc-test-2024-04-20",
   "edition": "Developer",
-  "features": ["EnableSetPasswordInApi"],
+  "features": ["EnableSetPasswordInApi", "Communities", "ServiceCloud", "EinsteinGPTForDevelopers", "InsuranceCalculationUser"],
   "settings": {
     "lightningExperienceSettings": {
       "enableS1DesktopEnabled": true

@@ -1,0 +1,10 @@
+<template>
+    <div class="prot-sect slds-var-p-around_large slds-var-m-bottom_large" lwc:ref="sect">
+        <div class="prot-sect-head" onclick={handleSectionHeadClick}>
+            <slot name="sectionHeader"></slot>
+        </div>
+        <div class="prot-sect-body" lwc:ref="sectBody" style="display: none;">
+            <slot name="sectionBody"></slot>
+        </div>
+    </div>
+</template>

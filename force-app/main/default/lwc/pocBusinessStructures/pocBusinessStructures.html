@@ -1,0 +1,7 @@
+<template>
+    <h1 class="slds-var-p-around_large">Testing expandable business structure</h1>
+    <template for:each={data} for:item="item">
+        <c-poc-business-structure key={item.index} business-structure={item} onshow={handleShow}>
+        </c-poc-business-structure>
+    </template>
+</template>

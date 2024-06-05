@@ -1,0 +1,14 @@
+{
+    "Username": "qa12@fraud.test.com",
+    "LastName": "qa12",
+    "FirstName": "Frontline",
+    "Email": "PengCheng.Zhou@gmail.com",
+    "Alias": "qa12",
+    "TimeZoneSidKey": "America/Toronto",
+    "LocaleSidKey": "en_US",
+    "EmailEncodingKey": "UTF-8",
+    "LanguageLocaleKey": "en_US",
+    "profileName": "Frontline Team",
+    "permsets": ["Fraud_Handling"],
+    "generatePassword": true
+}

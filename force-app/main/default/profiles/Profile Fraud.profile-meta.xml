@@ -22,16 +22,16 @@
         <enabled>true</enabled>
     </classAccesses>
     <custom>true</custom>
-    <fieldPermissions>
+    <!-- <fieldPermissions>
         <editable>false</editable>
         <field>Account.Fraud_Pending_Count__c</field>
         <readable>true</readable>
-    </fieldPermissions>
+    </fieldPermissions> 
     <fieldPermissions>
         <editable>false</editable>
         <field>Account.Fraud_Total_Count__c</field>
         <readable>true</readable>
-    </fieldPermissions>
+    </fieldPermissions>-->
     <fieldPermissions>
         <editable>true</editable>
         <field>Client_Credit_Report__c.Credit_Date__c</field>

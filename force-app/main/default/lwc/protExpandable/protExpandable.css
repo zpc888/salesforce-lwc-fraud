@@ -1,0 +1,12 @@
+.prot-sect {
+    border: solid 1px grey;
+}
+
+.prot-sect.expanded {
+    border-color: red;
+}
+
+.prot-sect-head {
+    width: 100%;
+}
+

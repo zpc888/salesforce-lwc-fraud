@@ -1,0 +1,28 @@
+.login-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.box {
+    border: 2px solid #ddd;
+    width: 88%;
+    margin: 0 auto;
+    padding: 20px;
+    box-shadom: 5px 10px #fffcfc;
+}
+
+.button {
+    margin-top: 1rem;
+    padding: 10px;
+    text-align: center;
+    background-color: #f1ca85;
+    color: black;
+    font-weight: bold;
+
+}
+
+.button:hover {
+    background-color: #f7b33e;
+    cursor: pointer;
+}
+

@@ -1,0 +1,14 @@
+{
+    "Username": "qa21@fraud.test.com",
+    "LastName": "qa21",
+    "FirstName": "Fraud",
+    "Email": "PengCheng.Zhou@gmail.com",
+    "Alias": "qa21",
+    "TimeZoneSidKey": "America/Toronto",
+    "LocaleSidKey": "en_US",
+    "EmailEncodingKey": "UTF-8",
+    "LanguageLocaleKey": "en_US",
+    "profileName": "Fraud Team",
+    "permsets": ["Fraud_Handling"],
+    "generatePassword": true
+}

@@ -1,0 +1,39 @@
+<template>
+    <div class="error">Please fix the error(s).</div>
+    <c-prot-expandable lwc:ref="expandableSection" 
+        onhide={handleHide}
+        onshow={handleShow}
+    >
+        <div class="section-header-i" lwc:ref="sectionHeaderI" slot="sectionHeader">
+            <div class="i-user">
+                <lightning-icon size="x-small" icon-name="utility:user"></lightning-icon>
+                <!-- <template lwc:if={isActive}>
+                    <lightning-icon class="i-active" size="x-small" icon-name="utility:user"></lightning-icon>
+                </template>
+                <template lwc:else>
+                    <lightning-icon size="x-small" icon-name="utility:user"></lightning-icon>
+                </template> -->
+            </div>
+            <div class="i-name">
+                <template lwc:if={isNew}>
+                    {identity}
+                </template>
+                <template lwc:else>
+                    <div class="i-identity">{identity}</div>
+                    <div class="i-supplement">{idSupplement}</div>
+                </template>
+            </div>
+            <div class="i-indicator">
+                <template lwc:if={isActive}>
+                    <lightning-icon size="x-small" icon-name="utility:chevrondown"></lightning-icon>
+                </template>
+                <template lwc:else>
+                    <lightning-icon size="x-small" icon-name="utility:chevronright"></lightning-icon>
+                </template>
+            </div>
+        </div>
+        <div class="section-body-i" slot="sectionBody">
+            {businessStructure.firstName} {businessStructure.lastName} {businessStructure.share}
+        </div>
+    </c-prot-expandable>
+</template>

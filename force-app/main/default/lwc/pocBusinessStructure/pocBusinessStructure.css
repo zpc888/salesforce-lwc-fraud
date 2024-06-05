@@ -1,0 +1,37 @@
+.section-header-i {
+    padding-left: 6px;
+    padding-right: 10px;
+    min-height: 40px;
+}
+.section-body-i {
+    padding-top: 20px;
+    padding-left: 40px;
+    padding-right: 10px;
+}
+
+.i-active {
+    /* --slds-c-icon-color-foreground: red; */
+    --slds-c-icon-color-foreground-default: red;
+    /* --sds-c-icon-background-color: red; */
+    color: red;
+}
+
+.i-user {
+    width: 34px;
+    /* padding-right: 10px; */
+    vertical-align: top;
+    display: inline-block;
+}
+
+.i-name {
+    display: inline-block;
+}
+
+.i-supplement {
+    font-size: 0.5rem;
+}
+
+.i-indicator {
+    float: right;
+    display: inline-block;
+}
