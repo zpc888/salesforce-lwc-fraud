@@ -1,0 +1,11 @@
+{
+  "type" : "sfdc_cms__route",
+  "title" : "Individual Client",
+  "contentBody" : {
+    "activeViewId" : "Individual_Client",
+    "configurationTags" : [ ],
+    "pageAccess" : "UseParent",
+    "routeType" : "custom-individual-client",
+    "urlPrefix" : "individual-client"
+  }
+}
